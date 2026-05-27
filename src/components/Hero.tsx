@@ -32,12 +32,12 @@ function Hero() {
         <div className="flex gap-5 mt-10">
           <Link
             to="/customize"
-            className="px-8 py-4 rounded-full border border-[#790405] text-lg bg-[#ca3a3c] hover:text-white transition"
+            className="px-8 py-4 rounded-full border-2 border-[#790405] text-lg text-white bg-[#ca3a3c] hover:bg-[#5a0205] hover:border-[#ff9999] transition-all duration-300"
           >
             Customize Now
           </Link>
 
-          <button className="px-8 py-4 rounded-full border border-[#790405] text-lg bg-[#ca3a3c] hover:text-white transition">
+          <button className="px-8 py-4 rounded-full border-2 border-[#790405] text-lg text-white bg-[#ca3a3c] hover:bg-[#5a0205] hover:border-[#ff9999] transition-all duration-300">
             Explore Collection
           </button>
         </div>

@@ -1,8 +1,11 @@
 import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useStore } from "../context/StoreContext";
 import logoImage from "../../Untitled (Your Story).png";
 
 function Navbar() {
+  const { cartCount, logout, user } = useStore();
+
   return (
     <nav className="relative z-20 flex min-h-28 items-center justify-between bg-[#2f9f9a] px-8 py-6">
       <img
@@ -20,11 +23,23 @@ function Navbar() {
       </div>
 
       <div className="z-20 ml-auto flex flex-wrap justify-end gap-x-8 gap-y-3 text-lg font-medium text-white xl:text-xl">
-        <a href="#" className="flex items-center gap-2">
+        <Link to="/cart" className="flex items-center gap-2">
           <ShoppingCart size={24} />
           Cart
-        </a>
+          {cartCount > 0 && (
+            <span className="rounded-full bg-[#ca3a3c] px-2 py-0.5 text-sm">
+              {cartCount}
+            </span>
+          )}
+        </Link>
         <Link to="/contact">Contact</Link>
+        {user ? (
+          <button type="button" onClick={logout} className="text-left">
+            Logout {user.name}
+          </button>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
       </div>
 
       <svg

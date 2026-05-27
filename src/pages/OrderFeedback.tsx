@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import feedbackCharacter from "../assets/customer-feedback-character.png";
 import customerReviewImage from "../../WhatsApp Image 2026-05-27 at 16.04.35.jpeg";
 import customerReviewImage2 from "../../WhatsApp Image 2026-05-27 at 16.08.20.jpeg";
 import customerReviewImage3 from "../../WhatsApp Image 2026-05-27 at 16.08.24.jpeg";
@@ -45,16 +46,26 @@ function OrderFeedback() {
       <Navbar />
 
       <main className="min-h-[95vh] px-16 py-20">
-        <section className="mx-auto max-w-4xl">
-          <h1 className="text-6xl font-black leading-tight text-[#ce272a]">
-            Order Feedback
-          </h1>
-          <p className="mt-5 max-w-2xl text-xl leading-relaxed text-gray-700">
-            Tell us how your Memory Magnets order went. Your feedback helps us
-            make every custom keepsake better.
-          </p>
+        <section className="mx-auto max-w-5xl">
+          <div className="grid grid-cols-[1fr_260px] items-center gap-10">
+            <div>
+              <h1 className="text-6xl font-black leading-tight text-[#ce272a]">
+                Order Feedback
+              </h1>
+              <p className="mt-5 max-w-2xl text-xl leading-relaxed text-gray-700">
+                Tell us how your Memory Magnets order went. Your feedback helps
+                us make every custom keepsake better.
+              </p>
+            </div>
 
-          <section className="mt-10 rounded-[32px] border border-[#2f9f9a]/30 bg-[#fffaf7] p-8 shadow-xl">
+            <img
+              src={feedbackCharacter}
+              alt="Happy customer holding a memory magnet"
+              className="w-full drop-shadow-2xl"
+            />
+          </div>
+
+          <section className="mt-10 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-8 shadow-xl">
             <div className="flex items-center justify-between gap-6">
               <h2 className="text-3xl font-black text-[#ce272a]">
                 Happy Customer Reviews
@@ -113,7 +124,7 @@ function OrderFeedback() {
             </div>
           </section>
 
-          <form className="mt-8 grid gap-6 rounded-[32px] border border-[#2f9f9a]/30 bg-[#fffaf7] p-10 shadow-xl">
+          <form className="mt-8 grid gap-6 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-10 shadow-xl">
             <div className="grid grid-cols-2 gap-6">
               <label className="flex flex-col gap-2 text-lg font-semibold">
                 Name

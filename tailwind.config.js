@@ -4,7 +4,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Baloo 2"', "system-ui", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 }

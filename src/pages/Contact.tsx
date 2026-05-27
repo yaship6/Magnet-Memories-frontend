@@ -38,7 +38,7 @@ function Contact() {
               <MapPin className="mb-5 text-[#2f9f9a]" size={36} />
               <h2 className="text-2xl font-black text-[#ce272a]">Address</h2>
               <p className="mt-4 text-lg leading-relaxed text-gray-700">
-                Add your business address here
+                Gardenia, Crossings Republik, Ghaziabad, 201016
               </p>
             </motion.div>
 
@@ -51,7 +51,7 @@ function Contact() {
               <UserRound className="mb-5 text-[#2f9f9a]" size={36} />
               <h2 className="text-2xl font-black text-[#ce272a]">Founder</h2>
               <p className="mt-4 text-lg leading-relaxed text-gray-700">
-                Add founder name here
+                Sanjana Trivedi & Gaurav Dubey
               </p>
             </motion.div>
 
@@ -64,7 +64,7 @@ function Contact() {
               <Phone className="mb-5 text-[#2f9f9a]" size={36} />
               <h2 className="text-2xl font-black text-[#ce272a]">Phone</h2>
               <p className="mt-4 text-lg leading-relaxed text-gray-700">
-                Add phone number here
+                +91 98765 43210
               </p>
             </motion.div>
           </div>
