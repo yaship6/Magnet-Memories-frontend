@@ -8,15 +8,15 @@ function OurStory() {
     <div className="min-h-screen bg-[#f8efe6] text-[#1a1a1a]">
       <Navbar />
 
-      <main className="min-h-[115vh] px-16 py-32">
-        <section className="mx-auto grid max-w-6xl grid-cols-[0.9fr_1.1fr] items-center gap-14">
+      <main className="min-h-[115vh] px-5 py-16 sm:px-8 lg:px-16 lg:py-32">
+        <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
           <motion.img
             src={withBgLogo}
             alt="The Memory Magnets"
             initial={{ opacity: 0, x: -50, rotate: -3 }}
             animate={{ opacity: 1, x: 0, rotate: 0 }}
             transition={{ duration: 0.8 }}
-            className="mx-auto h-80 rounded-[32px] object-contain"
+            className="mx-auto h-56 rounded-[32px] object-contain sm:h-80"
           />
 
           <motion.div
@@ -28,7 +28,7 @@ function OurStory() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="text-6xl font-black leading-tight text-[#ce272a]"
+              className="text-5xl font-black leading-tight text-[#ce272a] sm:text-6xl"
             >
               Our Story
             </motion.h1>

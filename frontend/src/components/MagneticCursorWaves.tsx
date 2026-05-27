@@ -34,7 +34,7 @@ function MagneticCursorWaves() {
         setWaves((currentWaves) =>
           currentWaves.filter((wave) => wave.id !== id)
         );
-      }, 700);
+      }, 1300);
     };
 
     window.addEventListener("click", handleClick);

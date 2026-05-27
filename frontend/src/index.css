@@ -33,7 +33,7 @@ textarea {
     0 0 0 4px rgba(202, 58, 60, 0.16),
     0 0 22px rgba(202, 58, 60, 0.45);
   transform: translate(-50%, -50%) scale(0.4);
-  animation: magnetic-wave 700ms ease-out forwards;
+  animation: magnetic-wave 1300ms ease-out forwards;
 }
 
 .magnetic-wave::before,
@@ -43,7 +43,7 @@ textarea {
   inset: -8px;
   border: 2px solid rgba(121, 4, 5, 0.5);
   border-radius: inherit;
-  animation: magnetic-wave-ring 700ms ease-out forwards;
+  animation: magnetic-wave-ring 1300ms ease-out forwards;
 }
 
 .magnetic-wave::after {

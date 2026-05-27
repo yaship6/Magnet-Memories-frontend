@@ -45,11 +45,11 @@ function OrderFeedback() {
     <div className="min-h-screen bg-[#f8efe6] text-[#1a1a1a]">
       <Navbar />
 
-      <main className="min-h-[95vh] px-16 py-20">
+      <main className="min-h-[95vh] px-5 py-16 sm:px-8 lg:px-16 lg:py-20">
         <section className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-[1fr_260px] items-center gap-10">
+          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1fr_220px] lg:grid-cols-[1fr_260px]">
             <div>
-              <h1 className="text-6xl font-black leading-tight text-[#ce272a]">
+              <h1 className="text-5xl font-black leading-tight text-[#ce272a] sm:text-6xl">
                 Order Feedback
               </h1>
               <p className="mt-5 max-w-2xl text-xl leading-relaxed text-gray-700">
@@ -61,13 +61,13 @@ function OrderFeedback() {
             <img
               src={feedbackCharacter}
               alt="Happy customer holding a memory magnet"
-              className="w-full drop-shadow-2xl"
+              className="mx-auto w-48 drop-shadow-2xl md:w-full"
             />
           </div>
 
-          <section className="mt-10 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-8 shadow-xl">
-            <div className="flex items-center justify-between gap-6">
-              <h2 className="text-3xl font-black text-[#ce272a]">
+          <section className="mt-10 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-5 shadow-xl sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-6">
+              <h2 className="text-2xl font-black text-[#ce272a] sm:text-3xl">
                 Happy Customer Reviews
               </h2>
 
@@ -91,7 +91,7 @@ function OrderFeedback() {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-[0.8fr_1.2fr] items-center gap-8">
+            <div className="mt-6 grid grid-cols-1 items-center gap-8 md:grid-cols-[0.8fr_1.2fr]">
               <img
                 src={review.image}
                 alt="Customer feedback for Memory Magnets"
@@ -124,8 +124,8 @@ function OrderFeedback() {
             </div>
           </section>
 
-          <form className="mt-8 grid gap-6 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-10 shadow-xl">
-            <div className="grid grid-cols-2 gap-6">
+          <form className="mt-8 grid gap-6 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-5 shadow-xl sm:p-10">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <label className="flex flex-col gap-2 text-lg font-semibold">
                 Name
                 <input

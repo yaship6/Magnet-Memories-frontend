@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
@@ -61,11 +61,7 @@ function CustomizeSection() {
     });
   };
 
-  const handleMagnetTypeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const nextMagnetType = event.target.value as MagnetType;
-
+  const updateMagnetType = (nextMagnetType: MagnetType) => {
     setMagnetType(nextMagnetType);
     setPreviewImages((currentPreviews) => {
       if (nextMagnetType === "Strip Acryclic Magent Frames") {
@@ -129,10 +125,10 @@ function CustomizeSection() {
 
     if (magnetType === "Big Acryclic Magent Frames") {
       return (
-        <div className="relative h-[460px] w-[390px] max-w-full rounded-[42px] border border-[#ffb6b6] bg-[#ca3a3c]/80 p-8 shadow-[0px_24px_80px_rgba(121,4,5,0.3)] backdrop-blur">
+        <div className="relative h-[360px] w-[310px] max-w-full rounded-[42px] border border-[#ffb6b6] bg-[#ca3a3c]/80 p-6 shadow-[0px_24px_80px_rgba(121,4,5,0.3)] backdrop-blur sm:h-[460px] sm:w-[390px] sm:p-8">
           <div className="absolute inset-4 rounded-[34px] border border-[#ffd6d6]" />
           <div className="relative flex h-full items-center justify-center">
-            <div className="h-72 w-52 rounded-[10px] bg-[#fff5f0] p-3 pb-12 shadow-xl">
+            <div className="h-56 w-40 rounded-[10px] bg-[#fff5f0] p-3 pb-10 shadow-xl sm:h-72 sm:w-52 sm:pb-12">
               <div className="relative h-full overflow-hidden rounded-md bg-[#ffd4d4]">
                 {renderPhoto(previewImages[0], photoSlotColors[0])}
                 {previewImages[0] && renderRemoveButton(0)}
@@ -144,7 +140,7 @@ function CustomizeSection() {
     }
 
     return (
-      <div className="h-[410px] w-[410px] max-w-full overflow-hidden rounded-[40px] bg-[#ca3a3c] p-5 shadow-[0px_20px_80px_rgba(121,4,5,0.3)]">
+      <div className="h-[300px] w-[300px] max-w-full overflow-hidden rounded-[40px] bg-[#ca3a3c] p-4 shadow-[0px_20px_80px_rgba(121,4,5,0.3)] sm:h-[410px] sm:w-[410px] sm:p-5">
         <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[30px] bg-[#ffe1dc]">
           {renderPhoto(previewImages[0], photoSlotColors[0])}
           {previewImages[0] && renderRemoveButton(0)}
@@ -181,7 +177,7 @@ function CustomizeSection() {
   return (
     <section
       id="customize"
-      className="relative min-h-screen overflow-hidden bg-[#f8efe6] px-16 py-24"
+      className="relative min-h-screen overflow-hidden bg-[#f8efe6] px-5 py-16 sm:px-8 lg:px-16 lg:py-24"
     >
       <motion.img
         src={customTabHelper}
@@ -196,23 +192,59 @@ function CustomizeSection() {
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="text-6xl font-black text-center text-[#1a1a1a]"
+        className="text-center text-5xl font-black text-[#1a1a1a] sm:text-6xl"
       >
         Customize Your Magnet
       </motion.h2>
 
-      <p className="text-center text-gray-600 text-xl mt-5">
+      <p className="mt-5 text-center text-lg text-gray-600 sm:text-xl">
         Upload your favorite memory and turn it into a premium keepsake.
       </p>
 
-      <div className="grid grid-cols-2 gap-14 mt-20">
+      <div className="mt-14 grid grid-cols-1 gap-12 lg:mt-20 lg:grid-cols-2 lg:gap-14">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
-          className="rounded-[40px] bg-[#ca3a3c] p-10 text-white shadow-[0px_24px_70px_rgba(121,4,5,0.28)]"
+          className="rounded-[32px] bg-[#ca3a3c] p-5 text-white shadow-[0px_24px_70px_rgba(121,4,5,0.28)] sm:p-10 sm:rounded-[40px]"
         >
           <h3 className="text-3xl font-bold mb-8">Create Your Magnet</h3>
+
+          <p className="mt-3 text-base text-[#ffe1dc]">
+            {magnetType === "Strip Acryclic Magent Frames"
+              ? "Upload exactly 3 pictures for a Strip Acryclic Magent Frame."
+              : "Upload 1 picture for this magnet."}
+          </p>
+
+          <div className="mt-7 grid gap-4">
+            {magnetTypes.map((type) => {
+              const isSelected = magnetType === type;
+
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => updateMagnetType(type)}
+                  className={`flex min-h-16 w-full items-center justify-between rounded-[24px] border px-6 py-4 text-left text-xl font-semibold transition ${
+                    isSelected
+                      ? "border-[#790405] bg-[#f8efe6] text-[#790405] shadow-lg"
+                      : "border-[#ffb6b6] bg-[#ffe1dc] text-[#1a1a1a] hover:border-[#790405]"
+                  }`}
+                >
+                  <span>{type}</span>
+                  <span
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                      isSelected
+                        ? "border-[#790405] bg-[#ca3a3c] text-white"
+                        : "border-[#790405]/30 bg-white text-transparent"
+                    }`}
+                  >
+                    <Check size={18} strokeWidth={3} />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
           <input
             key={fileInputKey}
@@ -220,23 +252,8 @@ function CustomizeSection() {
             accept="image/*"
             multiple={magnetType === "Strip Acryclic Magent Frames"}
             onChange={handleImageChange}
-            className="w-full rounded-2xl border border-[#ffb6b6] bg-[#f8efe6] p-5 text-[#1a1a1a]"
-          />
-          <p className="mt-3 text-base text-[#ffe1dc]">
-            {magnetType === "Strip Acryclic Magent Frames"
-              ? "Upload exactly 3 pictures for a Strip Acryclic Magent Frame."
-              : "Upload 1 picture for this magnet."}
-          </p>
-
-          <select
-            value={magnetType}
-            onChange={handleMagnetTypeChange}
             className="mt-5 w-full rounded-2xl border border-[#ffb6b6] bg-[#f8efe6] p-5 text-[#1a1a1a]"
-          >
-            {magnetTypes.map((type) => (
-              <option key={type}>{type}</option>
-            ))}
-          </select>
+          />
 
           <input
             type="number"

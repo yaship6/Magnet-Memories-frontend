@@ -17,15 +17,15 @@ const products = [
     imageHeight: "h-80",
   },
   {
-    category: "Strip Acryclic Magent Frames",
-    name: "Strip Acryclic Magent Frame",
+    category: "Strip Acryclic Magnet Frames",
+    name: "Strip Acryclic Magnet Frame",
     price: "Rs. 249",
     image: ekuImage,
     imageHeight: "h-56",
   },
   {
-    category: "Big Acryclic Magent Frames",
-    name: "Big Acryclic Magent Frame",
+    category: "Big Acryclic Magnet Frames",
+    name: "Big Acryclic Magnet Frame",
     price: "Rs. 199",
     image: motivationImage,
     imageHeight: "h-96",
@@ -45,15 +45,15 @@ const products = [
     imageHeight: "h-64",
   },
   {
-    category: "Strip Acryclic Magent Frames",
-    name: "Photo Strip Acryclic Magent Frame",
+    category: "Strip Acryclic Magnet Frames",
+    name: "Photo Strip Acryclic Magnet Frame",
     price: "Rs. 249",
     image: ganeshImage,
     imageHeight: "h-48",
   },
   {
-    category: "Big Acryclic Magent Frames",
-    name: "Premium Big Acryclic Magent Frame",
+    category: "Big Acryclic Magnet Frames",
+    name: "Premium Big Acryclic Magnet Frame",
     price: "Rs. 199",
     image: ekuImage,
     imageHeight: "h-88",
@@ -101,12 +101,12 @@ const shopPins = [
     ...product,
     name: [
       "Memory Square Photo Magnet",
-      "Mini Strip Acryclic Magent Frame",
-      "Classic Big Acryclic Magent Frame",
+      "Mini Strip Acryclic Magnet Frame",
+      "Classic Big Acryclic Magnet Frame",
       "Personalized logo magnet",
       "Pocket Square Photo Magnet",
-      "Family Strip Acryclic Magent Frame",
-      "Keepsake Big Acryclic Magent Frame",
+      "Family Strip Acryclic Magnet Frame",
+      "Keepsake Big Acryclic Magnet Frame",
     ][index],
     image: [
       motivationImage,
@@ -127,12 +127,12 @@ const categories = [
   { label: "All", value: "All" },
   { label: "Square Photo Magnets", value: "Square Photo Magnets" },
   {
-    label: "Big Acryclic Magent Frames",
-    value: "Big Acryclic Magent Frames",
+    label: "Big Acryclic Magnet Frames",
+    value: "Big Acryclic Magnet Frames",
   },
   {
-    label: "Strip Acryclic Magent Frames",
-    value: "Strip Acryclic Magent Frames",
+    label: "Strip Acryclic Magnet Frames",
+    value: "Strip Acryclic Magnet Frames",
   },
 ];
 

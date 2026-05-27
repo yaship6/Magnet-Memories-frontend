@@ -5,42 +5,60 @@ import logoImage from "../../Untitled (Your Story).png";
 
 function Navbar() {
   const { cartCount, logout, user } = useStore();
+  const navLinkClass =
+    "flex min-h-11 items-center justify-center rounded-full border-2 border-[#790405] bg-[#ca3a3c] px-4 py-2 text-center text-lg font-semibold leading-none text-white transition-all duration-300 hover:border-[#ff9999] hover:bg-[#5a0205]";
 
   return (
-    <nav className="relative z-20 flex min-h-28 items-center justify-between bg-[#2f9f9a] px-8 py-6">
+    <nav className="relative z-20 grid min-h-28 min-w-[1440px] grid-cols-[240px_1fr_auto] items-center gap-12 bg-[#2f9f9a] px-8 py-6">
       <img
         src={logoImage}
         alt="The Memory Magnets"
-        className="absolute bottom-[-54px] left-8 z-30 h-32 md:bottom-[-62px] md:left-10 md:h-36"
+        className="z-30 h-28 justify-self-start rounded-lg"
       />
 
-      <div className="absolute left-1/2 z-20 flex -translate-x-1/2 flex-wrap justify-center gap-x-7 gap-y-3 text-lg font-medium text-white xl:text-xl">
-        <Link to="/">Home</Link>
-        <Link to="/shop">Shop</Link>
-        <Link to="/customize">Customize</Link>
-        <Link to="/order-feedback">Feedback</Link>
-        <Link to="/society-stalls">Society Stalls</Link>
+      <div className="z-20 flex items-center justify-center gap-4 whitespace-nowrap text-white">
+        <Link to="/" className={navLinkClass}>
+          Home
+        </Link>
+        <Link to="/shop" className={navLinkClass}>
+          Shop
+        </Link>
+        <Link to="/customize" className={navLinkClass}>
+          Customize
+        </Link>
+        <Link to="/order-feedback" className={navLinkClass}>
+          Feedback
+        </Link>
+        <Link to="/society-stalls" className={navLinkClass}>
+          Society Stalls
+        </Link>
       </div>
 
-      <div className="z-20 ml-auto flex flex-wrap justify-end gap-x-8 gap-y-3 text-lg font-medium text-white xl:text-xl">
-        <Link to="/cart" className="flex items-center gap-2">
-          <ShoppingCart size={24} />
+      <div className="z-20 flex items-center justify-end gap-4 whitespace-nowrap text-white">
+        <Link to="/cart" className={`${navLinkClass} flex items-center gap-2`}>
+          <ShoppingCart size={22} />
           Cart
           {cartCount > 0 && (
-            <span className="rounded-full bg-[#ca3a3c] px-2 py-0.5 text-sm">
+            <span className="rounded-full bg-[#2f9f9a] px-2 py-0.5 text-sm">
               {cartCount}
             </span>
           )}
         </Link>
-        <Link to="/contact">Contact</Link>
+        <Link to="/contact" className={navLinkClass}>
+          Contact
+        </Link>
         {user ? (
-          <button type="button" onClick={logout} className="text-left">
+          <button type="button" onClick={logout} className={navLinkClass}>
             Logout {user.name}
           </button>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link>
+            <Link to="/login" className={navLinkClass}>
+              Login
+            </Link>
+            <Link to="/signup" className={navLinkClass}>
+              Signup
+            </Link>
           </>
         )}
       </div>

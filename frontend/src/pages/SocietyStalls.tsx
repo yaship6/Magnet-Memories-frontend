@@ -62,9 +62,9 @@ function SocietyStalls() {
     <div className="min-h-screen bg-[#f8efe6] text-[#1a1a1a]">
       <Navbar />
 
-      <main className="min-h-[105vh] px-16 py-28">
+      <main className="min-h-[105vh] px-5 py-16 sm:px-8 lg:px-16 lg:py-28">
         <section className="mx-auto max-w-7xl">
-          <h1 className="text-6xl font-black leading-tight text-[#ce272a]">
+          <h1 className="text-5xl font-black leading-tight text-[#ce272a] sm:text-6xl">
             Society Stalls
           </h1>
           <p className="mt-5 max-w-2xl text-xl leading-relaxed text-gray-700">
@@ -79,7 +79,7 @@ function SocietyStalls() {
                   {section.name}
                 </h2>
 
-                <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(15rem,1fr))] gap-6">
                   {section.media.map((media, index) => {
                     const mediaIndex = section.startIndex + index;
 

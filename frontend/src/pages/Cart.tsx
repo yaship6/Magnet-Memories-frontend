@@ -18,11 +18,13 @@ function Cart() {
     <div className="min-h-screen bg-[#f8efe6] text-[#1a1a1a]">
       <Navbar />
 
-      <main className="min-h-[80vh] px-16 py-20">
+      <main className="min-h-[80vh] px-5 py-16 sm:px-8 lg:px-16 lg:py-20">
         <section className="mx-auto max-w-5xl">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
-              <h1 className="text-6xl font-black text-[#ce272a]">Cart</h1>
+              <h1 className="text-5xl font-black text-[#ce272a] sm:text-6xl">
+                Cart
+              </h1>
               <p className="mt-4 text-xl text-gray-700">
                 {user
                   ? `${user.name}'s saved cart`
@@ -67,7 +69,7 @@ function Cart() {
               {cartItems.map((item) => (
                 <article
                   key={item.id}
-                  className="grid grid-cols-[120px_1fr_auto] items-center gap-6 rounded-[28px] bg-[#ffbcbc] p-5 shadow-lg"
+                  className="grid grid-cols-1 items-center gap-6 rounded-[28px] bg-[#ffbcbc] p-5 shadow-lg sm:grid-cols-[120px_1fr] lg:grid-cols-[120px_1fr_auto]"
                 >
                   <img
                     src={item.image}
@@ -87,7 +89,7 @@ function Cart() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-1">
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}

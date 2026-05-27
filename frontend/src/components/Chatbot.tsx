@@ -67,7 +67,7 @@ function Chatbot() {
   return (
     <div className="fixed bottom-3 right-2 z-[9998] flex flex-col items-end gap-3">
       {isOpen && (
-        <section className="w-[360px] max-w-[calc(100vw-32px)] overflow-hidden rounded-[28px] border border-[#ce272a]/20 bg-[#f8efe6] shadow-[0px_24px_70px_rgba(121,4,5,0.25)]">
+        <section className="w-[440px] max-w-[calc(100vw-32px)] overflow-hidden rounded-[28px] border border-[#ce272a]/20 bg-[#f8efe6] shadow-[0px_24px_70px_rgba(121,4,5,0.25)]">
           <div className="flex items-center justify-between bg-[#ca3a3c] px-5 py-4 text-white">
             <div className="flex items-center gap-3">
               <img
@@ -90,7 +90,7 @@ function Chatbot() {
             </button>
           </div>
 
-          <div className="flex max-h-80 flex-col gap-3 overflow-y-auto p-4">
+          <div className="flex h-[460px] max-h-[calc(100vh-260px)] flex-col gap-3 overflow-y-auto p-4">
             {messages.map((message) => (
               <p
                 key={message.id}
