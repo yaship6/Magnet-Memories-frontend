@@ -45,6 +45,14 @@ async function loadEnvFile() {
 
 await loadEnvFile();
 
+process.on("unhandledRejection", (error) => {
+  console.error("Unhandled rejection:", error);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught exception:", error);
+});
+
 const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://localhost:5173",
@@ -86,6 +94,25 @@ function createPasswordHash(password, salt = crypto.randomBytes(16).toString("he
     .toString("hex");
 
   return { salt, hash };
+}
+
+function createId() {
+  if (typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  const bytes = crypto.randomBytes(16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = bytes.toString("hex");
+
+  return [
+    hex.slice(0, 8),
+    hex.slice(8, 12),
+    hex.slice(12, 16),
+    hex.slice(16, 20),
+    hex.slice(20),
+  ].join("-");
 }
 
 function verifyPassword(password, user) {
@@ -357,57 +384,53 @@ app.get("/api/config-check", (_request, response) => {
 });
 
 app.post("/api/auth/signup", async (request, response) => {
-  const name = String(request.body.name ?? "").trim();
-  const gmail = String(request.body.gmail ?? "").trim().toLowerCase();
-  const password = String(request.body.password ?? "");
-
-  if (!name || !gmail || !password) {
-    return response.status(400).json({ message: "Name, Gmail, and password are required." });
-  }
-
-  if (password.length < 6) {
-    return response.status(400).json({ message: "Password must be at least 6 characters." });
-  }
-
-  let existingUser;
-
   try {
-    existingUser = await findSupabaseCustomerByGmail(gmail);
-  } catch (error) {
-    console.error(error);
-    return response.status(500).json({
-      message:
-        error instanceof Error ? error.message : "Could not check account.",
-    });
-  }
+    const name = String(request.body.name ?? "").trim();
+    const gmail = String(request.body.gmail ?? "").trim().toLowerCase();
+    const password = String(request.body.password ?? "");
 
-  if (existingUser) {
-    return response.status(409).json({ message: "An account with this email already exists." });
-  }
+    if (!name || !gmail || !password) {
+      return response
+        .status(400)
+        .json({ message: "Name, Gmail, and password are required." });
+    }
 
-  const { salt, hash } = createPasswordHash(password);
-  const user = {
-    id: crypto.randomUUID(),
-    name,
-    gmail,
-    salt,
-    password_hash: hash,
-    createdAt: new Date().toISOString(),
-  };
+    if (password.length < 6) {
+      return response
+        .status(400)
+        .json({ message: "Password must be at least 6 characters." });
+    }
 
-  try {
+    const existingUser = await findSupabaseCustomerByGmail(gmail);
+
+    if (existingUser) {
+      return response
+        .status(409)
+        .json({ message: "An account with this email already exists." });
+    }
+
+    const { salt, hash } = createPasswordHash(password);
+    const user = {
+      id: createId(),
+      name,
+      gmail,
+      salt,
+      password_hash: hash,
+      createdAt: new Date().toISOString(),
+    };
+
     await createSupabaseCustomer(user);
+
+    return response.status(201).json({ user: toPublicUser(user) });
   } catch (error) {
     console.error(error);
     return response.status(500).json({
       message:
         error instanceof Error
           ? error.message
-          : "Could not save signup details.",
+          : "Could not create account.",
     });
   }
-
-  return response.status(201).json({ user: toPublicUser(user) });
 });
 
 app.post("/api/auth/login", async (request, response) => {
