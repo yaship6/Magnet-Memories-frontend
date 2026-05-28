@@ -48,19 +48,34 @@ await loadEnvFile();
 const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://localhost:5173",
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+  ...(process.env.FRONTEND_URL ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+];
+
+function isAllowedOrigin(origin) {
+  if (!origin) {
+    return true;
+  }
+
+  return allowedOrigins.includes(origin) || origin.endsWith(".vercel.app");
+}
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin(origin, callback) {
+      callback(null, isAllowedOrigin(origin));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.options(/.*/, cors({
-  origin: allowedOrigins,
+  origin(origin, callback) {
+    callback(null, isAllowedOrigin(origin));
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
