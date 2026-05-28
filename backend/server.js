@@ -344,6 +344,18 @@ app.get("/api/health", (_request, response) => {
   response.json({ ok: true });
 });
 
+app.get("/api/config-check", (_request, response) => {
+  response.json({
+    ok: true,
+    supabaseUrlConfigured: Boolean(process.env.SUPABASE_URL),
+    supabaseServiceRoleConfigured: Boolean(
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    ),
+    frontendUrlConfigured: Boolean(process.env.FRONTEND_URL),
+    nodeVersion: process.version,
+  });
+});
+
 app.post("/api/auth/signup", async (request, response) => {
   const name = String(request.body.name ?? "").trim();
   const gmail = String(request.body.gmail ?? "").trim().toLowerCase();
