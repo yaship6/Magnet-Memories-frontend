@@ -1,4 +1,4 @@
-import { ShoppingCart } from "lucide-react";
+import { LogOut, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import logoImage from "../../Untitled (Your Story).png";
@@ -7,14 +7,14 @@ function Navbar() {
   const { cartCount, logout, user } = useStore();
 
   return (
-    <nav className="relative z-20 flex min-h-28 items-center justify-between bg-[#2f9f9a] px-8 py-6">
+    <nav className="relative z-20 flex min-h-20 items-center justify-between bg-[#2f9f9a] px-8 py-3">
       <img
         src={logoImage}
         alt="The Memory Magnets"
-        className="absolute bottom-[-54px] left-8 z-30 h-32 md:bottom-[-62px] md:left-10 md:h-36"
+        className="absolute bottom-[-56px] left-8 z-30 h-32 rounded-lg"
       />
 
-      <div className="absolute left-1/2 z-20 flex -translate-x-1/2 flex-wrap justify-center gap-x-7 gap-y-3 text-lg font-medium text-white xl:text-xl">
+      <div className="absolute left-1/2 z-20 flex -translate-x-[58%] flex-wrap justify-center gap-x-7 gap-y-3 text-lg font-medium text-white xl:text-xl">
         <Link to="/">Home</Link>
         <Link to="/shop">Shop</Link>
         <Link to="/customize">Customize</Link>
@@ -34,8 +34,14 @@ function Navbar() {
         </Link>
         <Link to="/contact">Contact</Link>
         {user ? (
-          <button type="button" onClick={logout} className="text-left">
-            Logout {user.name}
+          <button
+            type="button"
+            onClick={logout}
+            className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#790405] bg-[#ca3a3c] text-white"
+            aria-label={`Logout ${user.name}`}
+            title={`Logout ${user.name}`}
+          >
+            <LogOut size={22} />
           </button>
         ) : (
           <Link to="/login">Login</Link>

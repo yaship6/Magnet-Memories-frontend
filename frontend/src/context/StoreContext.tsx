@@ -11,6 +11,7 @@ export type User = {
   id?: string;
   name: string;
   email: string;
+  gmail?: string;
 };
 
 export type CartItem = {
@@ -35,12 +36,15 @@ type StoreContextValue = {
 };
 
 const StoreContext = createContext<StoreContextValue | undefined>(undefined);
-const currentUserKey = "memory-magnets-current-user";
+const currentUserKey = "memory-magnets-current-user-supabase";
+const legacyCurrentUserKey = "memory-magnets-current-user";
 const cartKeyPrefix = "memory-magnets-cart";
 
 const getCartKey = (email: string) => `${cartKeyPrefix}-${email}`;
 
 function readStoredUser() {
+  window.localStorage.removeItem(legacyCurrentUserKey);
+
   const storedUser = window.localStorage.getItem(currentUserKey);
 
   if (!storedUser) {
@@ -91,6 +95,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       id: nextUser.id,
       name: nextUser.name.trim(),
       email: nextUser.email.trim().toLowerCase(),
+      gmail: (nextUser.gmail ?? nextUser.email).trim().toLowerCase(),
     };
 
     window.localStorage.setItem(currentUserKey, JSON.stringify(normalizedUser));

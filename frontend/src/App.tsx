@@ -12,6 +12,7 @@ import Cart from "./pages/Cart";
 import Signup from "./pages/Signup";
 import Chatbot from "./components/Chatbot";
 import ReturnsExchanges from "./pages/ReturnsExchanges";
+import OrderHistory from "./pages/OrderHistory";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/orders" element={<OrderHistory />} />
         <Route path="/order-feedback" element={<OrderFeedback />} />
         <Route path="/society-stalls" element={<SocietyStalls />} />
         <Route path="/returns-exchanges" element={<ReturnsExchanges />} />

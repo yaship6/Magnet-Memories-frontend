@@ -6,7 +6,7 @@ import motivationImage from "../../Motivation.webp";
 
 function Hero() {
   return (
-    <section className="grid min-h-[calc(100vh-96px)] grid-cols-1 items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-2 lg:px-16 lg:py-28">
+    <section className="grid min-h-[calc(112vh-96px)] grid-cols-1 items-center gap-12 px-5 py-20 sm:px-8 lg:min-h-[calc(118vh-96px)] lg:grid-cols-2 lg:px-16 lg:py-32">
       <div>
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
@@ -37,9 +37,12 @@ function Hero() {
             Customize Now
           </Link>
 
-          <button className="px-8 py-4 rounded-full border-2 border-[#790405] text-lg text-white bg-[#ca3a3c] hover:bg-[#5a0205] hover:border-[#ff9999] transition-all duration-300">
+          <Link
+            to="/shop"
+            className="px-8 py-4 rounded-full border-2 border-[#790405] text-lg text-white bg-[#ca3a3c] hover:bg-[#5a0205] hover:border-[#ff9999] transition-all duration-300"
+          >
             Explore Collection
-          </button>
+          </Link>
         </div>
       </div>
 

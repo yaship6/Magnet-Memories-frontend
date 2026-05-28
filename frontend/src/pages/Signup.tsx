@@ -10,7 +10,7 @@ function Signup() {
   const navigate = useNavigate();
   const { setAuthenticatedUser } = useStore();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [gmail, setGmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -19,7 +19,7 @@ function Signup() {
     setError("");
 
     try {
-      const user = await signupUser({ name, email, password });
+      const user = await signupUser({ name, gmail, password });
       setAuthenticatedUser(user);
       navigate("/shop");
     } catch (error) {
@@ -61,13 +61,13 @@ function Signup() {
           </label>
 
           <label className="mt-5 flex flex-col gap-2 text-lg font-semibold">
-            Email
+            Gmail
             <input
               required
               type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
+              value={gmail}
+              onChange={(event) => setGmail(event.target.value)}
+              placeholder="yourgmail@gmail.com"
               className="rounded-2xl border border-[#ffb6b6] bg-[#f8efe6] px-5 py-4 text-[#1a1a1a] outline-none"
             />
           </label>

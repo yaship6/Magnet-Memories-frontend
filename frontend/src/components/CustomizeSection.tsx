@@ -24,6 +24,12 @@ const magnetPrices: Record<MagnetType, string> = {
   "Big Acryclic Magent Frames": "Rs. 199",
 };
 
+const magnetSizes: Record<MagnetType, string> = {
+  "Square Photo Magnets": "Square - 2x2 inches",
+  "Strip Acryclic Magent Frames": "Strip Magnetic Frame - 3x7 inches",
+  "Big Acryclic Magent Frames": "Rectangle Magnetic Frame - 3x4 inches",
+};
+
 function CustomizeSection() {
   const navigate = useNavigate();
   const { addToCart, user } = useStore();
@@ -216,7 +222,7 @@ function CustomizeSection() {
               : "Upload 1 picture for this magnet."}
           </p>
 
-          <div className="mt-7 grid gap-4">
+          <div className="mt-7 grid gap-4 sm:grid-cols-3">
             {magnetTypes.map((type) => {
               const isSelected = magnetType === type;
 
@@ -225,15 +231,26 @@ function CustomizeSection() {
                   key={type}
                   type="button"
                   onClick={() => updateMagnetType(type)}
-                  className={`flex min-h-16 w-full items-center justify-between rounded-[24px] border px-6 py-4 text-left text-xl font-semibold transition ${
+                  className={`flex min-h-36 w-full flex-col justify-between gap-4 rounded-[24px] border px-4 py-4 text-left transition ${
                     isSelected
                       ? "border-[#790405] bg-[#f8efe6] text-[#790405] shadow-lg"
                       : "border-[#ffb6b6] bg-[#ffe1dc] text-[#1a1a1a] hover:border-[#790405]"
                   }`}
                 >
-                  <span>{type}</span>
+                  <span className="min-w-0">
+                    <span className="block text-base font-bold leading-snug sm:text-lg">
+                      {type}
+                    </span>
+                    <span
+                      className={`mt-2 block text-sm font-semibold leading-snug ${
+                        isSelected ? "text-[#9a1518]" : "text-[#5a0205]/75"
+                      }`}
+                    >
+                      {magnetSizes[type]}
+                    </span>
+                  </span>
                   <span
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center self-end rounded-full border ${
                       isSelected
                         ? "border-[#790405] bg-[#ca3a3c] text-white"
                         : "border-[#790405]/30 bg-white text-transparent"
@@ -244,6 +261,15 @@ function CustomizeSection() {
                 </button>
               );
             })}
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-[#ffb6b6] bg-[#5a0205]/35 px-5 py-4">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#ffe1dc]">
+              Selected size
+            </p>
+            <p className="mt-1 text-lg font-bold text-white">
+              {magnetSizes[magnetType]}
+            </p>
           </div>
 
           <input

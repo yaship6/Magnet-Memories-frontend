@@ -11,6 +11,11 @@ import stallImage6 from "../../WhatsApp Image 2026-01-25 at 21.06.55.jpeg";
 import stallImage8 from "../../WhatsApp Image 2026-05-27 at 16.08.20 (1).jpeg";
 import stallImage9 from "../../WhatsApp Image 2026-05-27 at 16.08.20.jpeg";
 import stallImage10 from "../../WhatsApp Image 2026-05-27 at 16.08.24.jpeg";
+import stallImage11 from "../../../WhatsApp Image 2026-05-28 at 04.06.13.jpeg";
+import stallImage12 from "../../../WhatsApp Image 2026-05-28 at 04.06.56.jpeg";
+import stallImage13 from "../../../WhatsApp Image 2026-05-28 at 04.07.25.jpeg";
+import stallImage14 from "../../../WhatsApp Image 2026-05-28 at 04.07.48.jpeg";
+import stallImage15 from "../../../WhatsApp Image 2026-05-28 at 04.08.43.jpeg";
 import stallVideo1 from "../../WhatsApp Video 2026-01-25 at 21.06.53.mp4";
 import stallVideo2 from "../../WhatsApp Video 2026-05-27 at 16.08.24.mp4";
 
@@ -26,6 +31,11 @@ const stallMedia = [
   { type: "video", src: stallVideo2 },
   { type: "image", src: stallImage9 },
   { type: "image", src: stallImage10 },
+  { type: "image", src: stallImage11 },
+  { type: "image", src: stallImage12 },
+  { type: "image", src: stallImage13 },
+  { type: "image", src: stallImage14 },
+  { type: "image", src: stallImage15 },
 ];
 
 const stallSections = [
@@ -36,8 +46,13 @@ const stallSections = [
   },
   {
     name: "Gardenia",
-    media: stallMedia.slice(6),
+    media: stallMedia.slice(6, 11),
     startIndex: 6,
+  },
+  {
+    name: "Stall",
+    media: stallMedia.slice(11),
+    startIndex: 11,
   },
 ];
 

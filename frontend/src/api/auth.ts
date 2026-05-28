@@ -11,7 +11,7 @@ type AuthResponse = {
 
 export async function signupUser(payload: {
   name: string;
-  email: string;
+  gmail: string;
   password: string;
 }) {
   const response = await api.post<AuthResponse>("/auth/signup", payload);

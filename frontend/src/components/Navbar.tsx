@@ -1,4 +1,4 @@
-import { ShoppingCart } from "lucide-react";
+import { LogOut, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import logoImage from "../../Untitled (Your Story).png";
@@ -6,17 +6,17 @@ import logoImage from "../../Untitled (Your Story).png";
 function Navbar() {
   const { cartCount, logout, user } = useStore();
   const navLinkClass =
-    "flex min-h-11 items-center justify-center rounded-full border-2 border-[#790405] bg-[#ca3a3c] px-4 py-2 text-center text-lg font-semibold leading-none text-white transition-all duration-300 hover:border-[#ff9999] hover:bg-[#5a0205]";
+    "flex min-h-10 items-center justify-center rounded-full border-2 border-[#790405] bg-[#ca3a3c] px-4 py-2 text-center text-base font-semibold leading-none text-white transition-all duration-300 hover:border-[#ff9999] hover:bg-[#5a0205]";
 
   return (
-    <nav className="relative z-20 grid min-h-28 min-w-[1440px] grid-cols-[240px_1fr_auto] items-center gap-12 bg-[#2f9f9a] px-8 py-6">
+    <nav className="relative z-20 grid min-h-20 min-w-[1440px] grid-cols-[280px_1fr_280px] items-center gap-8 bg-[#2f9f9a] px-8 py-3">
       <img
         src={logoImage}
         alt="The Memory Magnets"
-        className="z-30 h-28 justify-self-start rounded-lg"
+        className="absolute bottom-[-56px] left-8 z-30 h-32 rounded-lg"
       />
 
-      <div className="z-20 flex items-center justify-center gap-4 whitespace-nowrap text-white">
+      <div className="z-20 col-start-2 flex -translate-x-8 items-center justify-center gap-3 whitespace-nowrap text-white">
         <Link to="/" className={navLinkClass}>
           Home
         </Link>
@@ -34,7 +34,7 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="z-20 flex items-center justify-end gap-4 whitespace-nowrap text-white">
+      <div className="z-20 col-start-3 flex items-center justify-end gap-3 whitespace-nowrap text-white">
         <Link to="/cart" className={`${navLinkClass} flex items-center gap-2`}>
           <ShoppingCart size={22} />
           Cart
@@ -48,9 +48,20 @@ function Navbar() {
           Contact
         </Link>
         {user ? (
-          <button type="button" onClick={logout} className={navLinkClass}>
-            Logout {user.name}
-          </button>
+          <>
+            <Link to="/orders" className={navLinkClass}>
+              Orders
+            </Link>
+            <button
+              type="button"
+              onClick={logout}
+              className={`${navLinkClass} w-12 px-0`}
+              aria-label={`Logout ${user.name}`}
+              title={`Logout ${user.name}`}
+            >
+              <LogOut size={22} />
+            </button>
+          </>
         ) : (
           <>
             <Link to="/login" className={navLinkClass}>

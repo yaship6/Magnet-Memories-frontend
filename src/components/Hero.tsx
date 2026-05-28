@@ -37,9 +37,12 @@ function Hero() {
             Customize Now
           </Link>
 
-          <button className="px-8 py-4 rounded-full border-2 border-[#790405] text-lg text-white bg-[#ca3a3c] hover:bg-[#5a0205] hover:border-[#ff9999] transition-all duration-300">
+          <Link
+            to="/shop"
+            className="px-8 py-4 rounded-full border-2 border-[#790405] text-lg text-white bg-[#ca3a3c] hover:bg-[#5a0205] hover:border-[#ff9999] transition-all duration-300"
+          >
             Explore Collection
-          </button>
+          </Link>
         </div>
       </div>
 

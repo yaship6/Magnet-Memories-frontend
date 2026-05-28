@@ -64,7 +64,7 @@ function Contact() {
               <Phone className="mb-5 text-[#2f9f9a]" size={36} />
               <h2 className="text-2xl font-black text-[#ce272a]">Phone</h2>
               <p className="mt-4 text-lg leading-relaxed text-gray-700">
-                +91 98765 43210
+                +91 70427 36597
               </p>
             </motion.div>
           </div>

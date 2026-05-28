@@ -50,7 +50,22 @@ const answers = [
   {
     keywords: ["delivery", "shipping", "ship"],
     reply:
-      "Delivery details can be confirmed during order discussion. For urgent orders or society stalls, contact the Memory Magnets team directly.",
+      "Delivery details can be confirmed during order discussion. For urgent orders or society stalls, contact the Memory Magnets team directly at +91 70427 36597.",
+  },
+  {
+    keywords: [
+      "return",
+      "returns",
+      "exchange",
+      "exchanges",
+      "refund",
+      "broken",
+      "damaged",
+      "damage",
+      "replacement",
+    ],
+    reply:
+      "Since Memory Magnets products are made with personal photos and custom details, returns and exchanges are not accepted for change of mind, incorrect photo selection, or custom order preferences. If your item arrives broken or damaged, please share clear photos or a video of the damage with your order details. Once reviewed, the team will help with the next step for a replacement or exchange where applicable.",
   },
   {
     keywords: ["society", "stall", "bulk", "event"],
@@ -60,7 +75,7 @@ const answers = [
   {
     keywords: ["contact", "instagram", "email", "help"],
     reply:
-      "You can reach us from the Contact page or on Instagram at @the.memory.magnets.",
+      "You can reach us from the Contact page, call us at +91 70427 36597, or message us on Instagram at @the.memory.magnets.",
   },
   {
     keywords: ["order", "feedback", "review"],
@@ -79,7 +94,7 @@ function getReply(message) {
     return matchedAnswer.reply;
   }
 
-  return "I can help with product types, customization, prices, cart, login, delivery, stalls, and order feedback. Tell me what you would like to know.";
+  return "I can help with product types, customization, prices, cart, login, delivery, returns, exchanges, stalls, and order feedback. Tell me what you would like to know.";
 }
 
 app.get("/api/health", (_request, response) => {

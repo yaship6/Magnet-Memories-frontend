@@ -34,12 +34,15 @@ type StoreContextValue = {
 };
 
 const StoreContext = createContext<StoreContextValue | undefined>(undefined);
-const currentUserKey = "memory-magnets-current-user";
+const currentUserKey = "memory-magnets-current-user-supabase";
+const legacyCurrentUserKey = "memory-magnets-current-user";
 const cartKeyPrefix = "memory-magnets-cart";
 
 const getCartKey = (email: string) => `${cartKeyPrefix}-${email}`;
 
 function readStoredUser() {
+  window.localStorage.removeItem(legacyCurrentUserKey);
+
   const storedUser = window.localStorage.getItem(currentUserKey);
 
   if (!storedUser) {
