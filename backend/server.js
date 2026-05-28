@@ -45,15 +45,22 @@ async function loadEnvFile() {
 
 await loadEnvFile();
 
+const allowedOrigins = [
+  "http://127.0.0.1:5173",
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: [
-      "http://127.0.0.1:5173",
-      "http://localhost:5173",
-      process.env.FRONTEND_URL,
-    ].filter(Boolean),
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
+
+app.options("*", cors());
 app.use(express.json({ limit: "10mb" }));
 
 function createPasswordHash(password, salt = crypto.randomBytes(16).toString("hex")) {
