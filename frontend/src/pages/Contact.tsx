@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin, Phone, UserRound } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import founderImage from "../../WhatsApp Image 2026-05-28 at 18.37.14.jpeg";
 
 function Contact() {
   return (
@@ -33,11 +34,11 @@ function Contact() {
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="rounded-[28px] border border-[#2f9f9a]/30 bg-[#fffaf7] p-8 shadow-xl"
+              className="self-start rounded-2xl border border-[#2f9f9a]/30 bg-[#fffaf7] p-5 text-center shadow-lg"
             >
-              <MapPin className="mb-5 text-[#2f9f9a]" size={36} />
-              <h2 className="text-2xl font-black text-[#ce272a]">Address</h2>
-              <p className="mt-4 text-lg leading-relaxed text-gray-700">
+              <MapPin className="mx-auto mb-3 text-[#2f9f9a]" size={30} />
+              <h2 className="text-xl font-black text-[#ce272a]">Address</h2>
+              <p className="mt-3 text-base leading-relaxed text-gray-700">
                 Gardenia, Crossings Republik, Ghaziabad, 201016
               </p>
             </motion.div>
@@ -46,10 +47,15 @@ function Contact() {
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.35 }}
-              className="rounded-[28px] border border-[#2f9f9a]/30 bg-[#fffaf7] p-8 shadow-xl"
+              className="rounded-[28px] border border-[#2f9f9a]/30 bg-[#fffaf7] p-8 text-center shadow-xl"
             >
-              <UserRound className="mb-5 text-[#2f9f9a]" size={36} />
-              <h2 className="text-2xl font-black text-[#ce272a]">Founder</h2>
+              <UserRound className="mx-auto mb-5 text-[#2f9f9a]" size={36} />
+              <h2 className="text-2xl font-black text-[#ce272a]">Founders</h2>
+              <img
+                src={founderImage}
+                alt="Sanjana Trivedi and Gaurav Dubey"
+                className="mx-auto mt-5 aspect-[4/5] w-full rounded-2xl object-cover object-top"
+              />
               <p className="mt-4 text-lg leading-relaxed text-gray-700">
                 Sanjana Trivedi & Gaurav Dubey
               </p>
@@ -59,11 +65,11 @@ function Contact() {
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.45 }}
-              className="rounded-[28px] border border-[#2f9f9a]/30 bg-[#fffaf7] p-8 shadow-xl"
+              className="self-start rounded-2xl border border-[#2f9f9a]/30 bg-[#fffaf7] p-5 text-center shadow-lg"
             >
-              <Phone className="mb-5 text-[#2f9f9a]" size={36} />
-              <h2 className="text-2xl font-black text-[#ce272a]">Phone</h2>
-              <p className="mt-4 text-lg leading-relaxed text-gray-700">
+              <Phone className="mx-auto mb-3 text-[#2f9f9a]" size={30} />
+              <h2 className="text-xl font-black text-[#ce272a]">Phone</h2>
+              <p className="mt-3 text-base leading-relaxed text-gray-700">
                 +91 70427 36597
               </p>
             </motion.div>

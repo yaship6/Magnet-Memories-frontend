@@ -3,136 +3,305 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useStore } from "../context/StoreContext";
-import ekuImage from "../../Eku.png";
-import ganeshImage from "../../Ganesh.png";
-import motivationImage from "../../Motivation.webp";
-import logoImage from "../../withbg.png";
+
+type Product = {
+  category:
+    | "Square Photo Magnets"
+    | "Strip Acrylic Magnet Frames"
+    | "Big Acrylic Magnet Frames";
+  name: string;
+  price: string;
+  image: string | string[];
+  quote?: string;
+};
+
+const magnetImages = {
+  familyBirthday:
+    "https://images.pexels.com/photos/7921809/pexels-photo-7921809.jpeg?auto=compress&cs=tinysrgb&w=900",
+  indianWedding:
+    "https://images.pexels.com/photos/27456655/pexels-photo-27456655.jpeg?auto=compress&cs=tinysrgb&w=900",
+  bridalPortrait:
+    "https://images.pexels.com/photos/27455007/pexels-photo-27455007.jpeg?auto=compress&cs=tinysrgb&w=900",
+  familyPicnic:
+    "https://images.pexels.com/photos/7669128/pexels-photo-7669128.jpeg?auto=compress&cs=tinysrgb&w=900",
+  picnicMusic:
+    "https://images.pexels.com/photos/8841503/pexels-photo-8841503.jpeg?auto=compress&cs=tinysrgb&w=900",
+  backyardMeal:
+    "https://images.pexels.com/photos/8841182/pexels-photo-8841182.jpeg?auto=compress&cs=tinysrgb&w=900",
+  beachCouple:
+    "https://images.pexels.com/photos/9149294/pexels-photo-9149294.jpeg?auto=compress&cs=tinysrgb&w=900",
+  beachWalk:
+    "https://images.pexels.com/photos/15954981/pexels-photo-15954981.jpeg?auto=compress&cs=tinysrgb&w=900",
+  picnicFamily:
+    "https://images.pexels.com/photos/5119627/pexels-photo-5119627.jpeg?auto=compress&cs=tinysrgb&w=900",
+  coastCouple:
+    "https://images.pexels.com/photos/6075217/pexels-photo-6075217.jpeg?auto=compress&cs=tinysrgb&w=900",
+  partyFamily:
+    "https://images.pexels.com/photos/4262427/pexels-photo-4262427.jpeg?auto=compress&cs=tinysrgb&w=900",
+  grassFamily:
+    "https://images.pexels.com/photos/36317738/pexels-photo-36317738.jpeg?auto=compress&cs=tinysrgb&w=900",
+  tropicalCouple:
+    "https://images.pexels.com/photos/15831641/pexels-photo-15831641.jpeg?auto=compress&cs=tinysrgb&w=900",
+  weddingSmile:
+    "https://images.pexels.com/photos/27456656/pexels-photo-27456656.jpeg?auto=compress&cs=tinysrgb&w=900",
+  pinkFlowers:
+    "https://images.pexels.com/photos/16665255/pexels-photo-16665255.jpeg?auto=compress&cs=tinysrgb&w=900",
+  peonies:
+    "https://images.pexels.com/photos/931188/pexels-photo-931188.jpeg?auto=compress&cs=tinysrgb&w=900",
+  tulips:
+    "https://images.pexels.com/photos/3878527/pexels-photo-3878527.jpeg?auto=compress&cs=tinysrgb&w=900",
+  pastelSky:
+    "https://images.pexels.com/photos/10731706/pexels-photo-10731706.jpeg?auto=compress&cs=tinysrgb&w=900",
+  dreamySky:
+    "https://images.pexels.com/photos/14060322/pexels-photo-14060322.jpeg?auto=compress&cs=tinysrgb&w=900",
+  floralCake:
+    "https://images.pexels.com/photos/11783270/pexels-photo-11783270.jpeg?auto=compress&cs=tinysrgb&w=900",
+  berryCake:
+    "https://images.pexels.com/photos/8101695/pexels-photo-8101695.jpeg?auto=compress&cs=tinysrgb&w=900",
+  coffeeFlowers:
+    "https://images.pexels.com/photos/14258282/pexels-photo-14258282.jpeg?auto=compress&cs=tinysrgb&w=900",
+  coffeeRoses:
+    "https://images.pexels.com/photos/17460292/pexels-photo-17460292.jpeg?auto=compress&cs=tinysrgb&w=900",
+  candleCoffee:
+    "https://images.pexels.com/photos/14656017/pexels-photo-14656017.jpeg?auto=compress&cs=tinysrgb&w=900",
+  mountainSunset:
+    "https://images.pexels.com/photos/816057/pexels-photo-816057.jpeg?auto=compress&cs=tinysrgb&w=900",
+  mountainDusk:
+    "https://images.pexels.com/photos/5661213/pexels-photo-5661213.jpeg?auto=compress&cs=tinysrgb&w=900",
+  winterMountain:
+    "https://images.pexels.com/photos/15476103/pexels-photo-15476103.jpeg?auto=compress&cs=tinysrgb&w=900",
+  babyCake:
+    "https://images.pexels.com/photos/2116103/pexels-photo-2116103.jpeg?auto=compress&cs=tinysrgb&w=900",
+  cakeSmash:
+    "https://images.pexels.com/photos/30111570/pexels-photo-30111570.jpeg?auto=compress&cs=tinysrgb&w=900",
+  cuteDog:
+    "https://images.pexels.com/photos/27487541/pexels-photo-27487541.jpeg?auto=compress&cs=tinysrgb&w=900",
+  fluffyDog:
+    "https://images.pexels.com/photos/14506620/pexels-photo-14506620.jpeg?auto=compress&cs=tinysrgb&w=900",
+};
 
 const products = [
   {
     category: "Square Photo Magnets",
-    name: "Square Photo Magnets",
+    name: "Pastel sky quote magnet",
     price: "Rs. 99",
-    image: ganeshImage,
-    imageHeight: "h-80",
+    image: magnetImages.pastelSky,
+    quote: "Choose joy",
   },
   {
-    category: "Strip Acryclic Magnet Frames",
-    name: "Strip Acryclic Magnet Frame",
+    category: "Strip Acrylic Magnet Frames",
+    name: "Bloom Strip Acrylic Magnet Frame",
     price: "Rs. 249",
-    image: ekuImage,
-    imageHeight: "h-56",
-  },
-  {
-    category: "Big Acryclic Magnet Frames",
-    name: "Big Acryclic Magnet Frame",
-    price: "Rs. 199",
-    image: motivationImage,
-    imageHeight: "h-96",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Custom logo magnet",
-    price: "Rs. 99",
-    image: logoImage,
-    imageHeight: "h-72",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Mini Square Photo Magnet",
-    price: "Rs. 99",
-    image: ganeshImage,
-    imageHeight: "h-64",
-  },
-  {
-    category: "Strip Acryclic Magnet Frames",
-    name: "Photo Strip Acryclic Magnet Frame",
-    price: "Rs. 249",
-    image: ekuImage,
-    imageHeight: "h-48",
-  },
-  {
-    category: "Big Acryclic Magnet Frames",
-    name: "Premium Big Acryclic Magnet Frame",
-    price: "Rs. 199",
-    image: motivationImage,
-    imageHeight: "h-88",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Logo magnet",
-    price: "Rs. 99",
-    image: logoImage,
-    imageHeight: "h-60",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Memory gift set",
-    price: "Rs. 99",
-    image: ganeshImage,
-    imageHeight: "h-72",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Quote magnet",
-    price: "Rs. 99",
-    image: ekuImage,
-    imageHeight: "h-52",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Festive magnet",
-    price: "Rs. 99",
-    image: motivationImage,
-    imageHeight: "h-80",
-  },
-  {
-    category: "Square Photo Magnets",
-    name: "Personalized magnet",
-    price: "Rs. 99",
-    image: logoImage,
-    imageHeight: "h-64",
-  },
-];
-
-const shopPins = [
-  ...products.slice(0, 7),
-  ...products.slice(0, 7).map((product, index) => ({
-    ...product,
-    name: [
-      "Memory Square Photo Magnet",
-      "Mini Strip Acryclic Magnet Frame",
-      "Classic Big Acryclic Magnet Frame",
-      "Personalized logo magnet",
-      "Pocket Square Photo Magnet",
-      "Family Strip Acryclic Magnet Frame",
-      "Keepsake Big Acryclic Magnet Frame",
-    ][index],
     image: [
-      motivationImage,
-      ganeshImage,
-      ekuImage,
-      logoImage,
-      ganeshImage,
-      motivationImage,
-      ekuImage,
-    ][index],
-    imageHeight: ["h-56", "h-72", "h-52", "h-80", "h-64", "h-48", "h-88"][
-      index
+      magnetImages.pinkFlowers,
+      magnetImages.peonies,
+      magnetImages.tulips,
     ],
-  })),
-];
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Floral cake Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.floralCake,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Pink flower magnet",
+    price: "Rs. 99",
+    image: magnetImages.pinkFlowers,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Dreamy sky magnet",
+    price: "Rs. 99",
+    image: magnetImages.dreamySky,
+  },
+  {
+    category: "Strip Acrylic Magnet Frames",
+    name: "Cake Party Strip Acrylic Magnet Frame",
+    price: "Rs. 249",
+    image: [
+      magnetImages.floralCake,
+      magnetImages.berryCake,
+      magnetImages.partyFamily,
+    ],
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Pastel sky Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.dreamySky,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Berry cake magnet",
+    price: "Rs. 99",
+    image: magnetImages.berryCake,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Motivation mini magnet",
+    price: "Rs. 99",
+    image: magnetImages.peonies,
+    quote: "Small steps every day",
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Tulip desk magnet",
+    price: "Rs. 99",
+    image: magnetImages.tulips,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Birthday cake magnet",
+    price: "Rs. 99",
+    image: magnetImages.floralCake,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Keep going quote magnet",
+    price: "Rs. 99",
+    image: magnetImages.pastelSky,
+    quote: "Keep going",
+  },
+  {
+    category: "Strip Acrylic Magnet Frames",
+    name: "Pinterest Mood Strip Acrylic Magnet Frame",
+    price: "Rs. 249",
+    image: [
+      magnetImages.pastelSky,
+      magnetImages.pinkFlowers,
+      magnetImages.berryCake,
+    ],
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Flower Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.peonies,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Family memory magnet",
+    price: "Rs. 99",
+    image: magnetImages.familyBirthday,
+  },
+  {
+    category: "Strip Acrylic Magnet Frames",
+    name: "Celebration Strip Acrylic Magnet Frame",
+    price: "Rs. 249",
+    image: [
+      magnetImages.familyBirthday,
+      magnetImages.partyFamily,
+      magnetImages.floralCake,
+    ],
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Wedding Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.weddingSmile,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Coffee table magnet",
+    price: "Rs. 99",
+    image: magnetImages.coffeeFlowers,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Cozy coffee quote magnet",
+    price: "Rs. 99",
+    image: magnetImages.coffeeRoses,
+    quote: "Slow mornings",
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Mountain sunset magnet",
+    price: "Rs. 99",
+    image: magnetImages.mountainSunset,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Adventure quote magnet",
+    price: "Rs. 99",
+    image: magnetImages.mountainDusk,
+    quote: "Go where you feel alive",
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Baby cake magnet",
+    price: "Rs. 99",
+    image: magnetImages.babyCake,
+  },
+  {
+    category: "Square Photo Magnets",
+    name: "Pet portrait magnet",
+    price: "Rs. 99",
+    image: magnetImages.cuteDog,
+  },
+  {
+    category: "Strip Acrylic Magnet Frames",
+    name: "Cozy Cafe Strip Acrylic Magnet Frame",
+    price: "Rs. 249",
+    image: [
+      magnetImages.coffeeFlowers,
+      magnetImages.coffeeRoses,
+      magnetImages.candleCoffee,
+    ],
+  },
+  {
+    category: "Strip Acrylic Magnet Frames",
+    name: "Mountain Mood Strip Acrylic Magnet Frame",
+    price: "Rs. 249",
+    image: [
+      magnetImages.mountainSunset,
+      magnetImages.mountainDusk,
+      magnetImages.winterMountain,
+    ],
+  },
+  {
+    category: "Strip Acrylic Magnet Frames",
+    name: "Cute Moments Strip Acrylic Magnet Frame",
+    price: "Rs. 249",
+    image: [
+      magnetImages.babyCake,
+      magnetImages.cakeSmash,
+      magnetImages.fluffyDog,
+    ],
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Cozy Coffee Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.candleCoffee,
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Mountain Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.winterMountain,
+  },
+  {
+    category: "Big Acrylic Magnet Frames",
+    name: "Cake Smash Big Acrylic Magnet Frame",
+    price: "Rs. 199",
+    image: magnetImages.cakeSmash,
+  },
+] satisfies Product[];
+
+const shopPins = products;
 
 const categories = [
   { label: "All", value: "All" },
   { label: "Square Photo Magnets", value: "Square Photo Magnets" },
   {
-    label: "Big Acryclic Magnet Frames",
-    value: "Big Acryclic Magnet Frames",
+    label: "Big Acrylic Magnet Frames",
+    value: "Big Acrylic Magnet Frames",
   },
   {
-    label: "Strip Acryclic Magnet Frames",
-    value: "Strip Acryclic Magnet Frames",
+    label: "Strip Acrylic Magnet Frames",
+    value: "Strip Acrylic Magnet Frames",
   },
 ];
 
@@ -151,7 +320,6 @@ function Shop() {
       ? shopPins
       : shopPins.filter((product) => product.category === activeCategory);
   const isFilteredView = activeCategory !== "All";
-  const isSquareView = activeCategory === "Square Photo Magnets";
 
   const updateCategory = (category: string) => {
     if (category === "All") {
@@ -173,8 +341,113 @@ function Shop() {
       name: product.name,
       price: product.price,
       category: product.category,
-      image: product.image,
+      image: Array.isArray(product.image) ? product.image[0] : product.image,
     });
+  };
+
+  const renderProductPreview = (product: Product) => {
+    if (product.category === "Strip Acrylic Magnet Frames") {
+      const images = Array.isArray(product.image)
+        ? product.image
+        : [product.image, product.image, product.image];
+
+      return (
+        <div className="flex h-[420px] items-center justify-center bg-[#f6f1ec] p-5">
+          <div className="relative aspect-[3/7] h-full max-h-[380px] rounded-[20px] bg-[#d8d5cb]/60 p-3 shadow-[0_18px_35px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.8)]">
+            {[0, 1, 2, 3].map((corner) => (
+              <span
+                key={corner}
+                className={`absolute z-10 h-6 w-6 rounded-full bg-gradient-to-br from-white via-[#e8e4db] to-[#aaa59a] shadow ${
+                  corner === 0
+                    ? "left-2 top-2"
+                    : corner === 1
+                    ? "right-2 top-2"
+                    : corner === 2
+                    ? "bottom-2 left-2"
+                    : "bottom-2 right-2"
+                }`}
+              />
+            ))}
+            <div className="flex h-full flex-col gap-2 rounded-[12px] bg-white p-2 shadow-[0_8px_16px_rgba(0,0,0,0.12)]">
+              {images.slice(0, 3).map((image, imageIndex) => (
+                <div
+                  key={`${image}-${imageIndex}`}
+                  className="min-h-0 flex-1 overflow-hidden bg-[#f8efe6]"
+                >
+                  <img
+                    src={image}
+                    alt={`${product.name} photo ${imageIndex + 1}`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="pointer-events-none absolute inset-0 rounded-[20px] bg-gradient-to-br from-white/35 via-transparent to-black/10" />
+          </div>
+        </div>
+      );
+    }
+
+    if (product.category === "Big Acrylic Magnet Frames") {
+      const image = Array.isArray(product.image) ? product.image[0] : product.image;
+
+      return (
+        <div className="flex h-[420px] items-center justify-center bg-[#f6f1ec] p-5">
+          <div className="relative aspect-[3/4] h-full max-h-[380px] rounded-[22px] bg-[#e8e8e3]/65 p-4 shadow-[0_18px_36px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.85)]">
+            {[0, 1, 2, 3].map((corner) => (
+              <span
+                key={corner}
+                className={`absolute z-10 h-6 w-6 rounded-full bg-gradient-to-br from-white via-[#efeee9] to-[#c8c3b8] shadow ${
+                  corner === 0
+                    ? "left-2 top-2"
+                    : corner === 1
+                    ? "right-2 top-2"
+                    : corner === 2
+                    ? "bottom-2 left-2"
+                    : "bottom-2 right-2"
+                }`}
+              />
+            ))}
+            <div className="h-full overflow-hidden rounded-[12px] bg-white p-2 shadow-[0_8px_16px_rgba(0,0,0,0.12)]">
+              <img
+                src={image}
+                alt={product.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="pointer-events-none absolute inset-0 rounded-[22px] bg-gradient-to-br from-white/35 via-transparent to-black/10" />
+          </div>
+        </div>
+      );
+    }
+
+    const image = Array.isArray(product.image) ? product.image[0] : product.image;
+
+    return (
+      <div className="flex aspect-square items-center justify-center bg-[#f6f1ec] p-5">
+        <div className="relative aspect-square w-full max-w-[330px] overflow-hidden rounded-[34px] bg-[#f1f1f1] shadow-[0_18px_34px_rgba(0,0,0,0.2),inset_0_8px_12px_rgba(255,255,255,0.68),inset_0_-12px_18px_rgba(0,0,0,0.12)]">
+          <img
+            src={image}
+            alt={product.name}
+            className="h-full w-full object-cover"
+          />
+          <div
+            className={`pointer-events-none absolute inset-0 ${
+              product.quote
+                ? "bg-gradient-to-br from-white/72 via-white/24 to-black/24"
+                : "bg-gradient-to-br from-white/38 via-transparent to-black/14"
+            }`}
+          />
+          {product.quote && (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-7 text-center">
+              <p className="rounded-2xl bg-white/72 px-5 py-4 text-2xl font-black leading-tight text-[#790405] shadow-[0_10px_24px_rgba(0,0,0,0.16)] backdrop-blur-sm">
+                {product.quote}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -216,16 +489,8 @@ function Shop() {
                     : "mb-5 inline-block w-full break-inside-avoid"
                 }`}
               >
-                <div
-                  className={`relative flex ${
-                    isSquareView ? "aspect-square h-auto" : product.imageHeight
-                  } items-center justify-center overflow-hidden rounded-2xl bg-white`}
-                >
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-full object-cover"
-                  />
+                <div className="relative overflow-hidden rounded-2xl bg-white">
+                  {renderProductPreview(product)}
                   <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/20" />
                   <button className="absolute right-3 top-3 rounded-full bg-[#e60023] px-5 py-3 text-sm font-bold text-white opacity-0 shadow-lg transition group-hover:opacity-100">
                     Save

@@ -7,27 +7,34 @@ import customTabHelper from "../assets/custom-tab-helper-transparent.png";
 
 type MagnetType =
   | "Square Photo Magnets"
-  | "Strip Acryclic Magent Frames"
-  | "Big Acryclic Magent Frames";
+  | "Strip Acrylic Magnet Frames"
+  | "Big Acrylic Magnet Frames";
+
+type ImageAdjustment = {
+  scale: number;
+  x: number;
+  y: number;
+};
 
 const magnetTypes: MagnetType[] = [
   "Square Photo Magnets",
-  "Strip Acryclic Magent Frames",
-  "Big Acryclic Magent Frames",
+  "Strip Acrylic Magnet Frames",
+  "Big Acrylic Magnet Frames",
 ];
 
 const photoSlotColors = ["bg-[#ffd4d4]", "bg-[#fff1e7]", "bg-[#f7b8b9]"];
+const defaultImageAdjustment: ImageAdjustment = { scale: 1, x: 0, y: 0 };
 
 const magnetPrices: Record<MagnetType, string> = {
   "Square Photo Magnets": "Rs. 99",
-  "Strip Acryclic Magent Frames": "Rs. 249",
-  "Big Acryclic Magent Frames": "Rs. 199",
+  "Strip Acrylic Magnet Frames": "Rs. 249",
+  "Big Acrylic Magnet Frames": "Rs. 199",
 };
 
 const magnetSizes: Record<MagnetType, string> = {
   "Square Photo Magnets": "Square - 2x2 inches",
-  "Strip Acryclic Magent Frames": "Strip Magnetic Frame - 3x7 inches",
-  "Big Acryclic Magent Frames": "Rectangle Magnetic Frame - 3x4 inches",
+  "Strip Acrylic Magnet Frames": "Strip Magnetic Frame - 3x7 inches",
+  "Big Acrylic Magnet Frames": "Rectangle Magnetic Frame - 3x4 inches",
 };
 
 function CustomizeSection() {
@@ -36,23 +43,28 @@ function CustomizeSection() {
   const [magnetType, setMagnetType] =
     useState<MagnetType>("Square Photo Magnets");
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [imageAdjustments, setImageAdjustments] = useState<ImageAdjustment[]>(
+    []
+  );
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [fileInputKey, setFileInputKey] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [cartMessage, setCartMessage] = useState("");
+  const needsThreeImages = magnetType === "Strip Acrylic Magnet Frames";
   const hasRequiredImages =
-    magnetType === "Strip Acryclic Magent Frames"
-      ? previewImages.length === 3
-      : previewImages.length === 1;
+    needsThreeImages ? previewImages.length === 3 : previewImages.length === 1;
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
 
     if (files.length === 0) {
       setPreviewImages([]);
+      setImageAdjustments([]);
+      setActiveImageIndex(0);
       return;
     }
 
-    const maxImages = magnetType === "Strip Acryclic Magent Frames" ? 3 : 1;
+    const maxImages = needsThreeImages ? 3 : 1;
     const readers = files.slice(0, maxImages).map(
       (file) =>
         new Promise<string>((resolve) => {
@@ -64,13 +76,17 @@ function CustomizeSection() {
 
     Promise.all(readers).then((nextPreviews) => {
       setPreviewImages(nextPreviews);
+      setImageAdjustments(
+        nextPreviews.map(() => ({ ...defaultImageAdjustment }))
+      );
+      setActiveImageIndex(0);
     });
   };
 
   const updateMagnetType = (nextMagnetType: MagnetType) => {
     setMagnetType(nextMagnetType);
     setPreviewImages((currentPreviews) => {
-      if (nextMagnetType === "Strip Acryclic Magent Frames") {
+      if (nextMagnetType === "Strip Acrylic Magnet Frames") {
         return currentPreviews;
       }
 
@@ -78,6 +94,16 @@ function CustomizeSection() {
 
       return firstPreview ? [firstPreview] : [];
     });
+    setImageAdjustments((currentAdjustments) => {
+      if (nextMagnetType === "Strip Acrylic Magnet Frames") {
+        return currentAdjustments;
+      }
+
+      const [firstAdjustment] = currentAdjustments;
+
+      return firstAdjustment ? [firstAdjustment] : [];
+    });
+    setActiveImageIndex(0);
     setFileInputKey((currentKey) => currentKey + 1);
   };
 
@@ -85,7 +111,37 @@ function CustomizeSection() {
     setPreviewImages((currentPreviews) => {
       return currentPreviews.filter((_, index) => index !== indexToRemove);
     });
+    setImageAdjustments((currentAdjustments) => {
+      return currentAdjustments.filter((_, index) => index !== indexToRemove);
+    });
+    setActiveImageIndex((currentIndex) => {
+      return Math.max(0, Math.min(currentIndex, previewImages.length - 2));
+    });
     setFileInputKey((currentKey) => currentKey + 1);
+  };
+
+  const updateImageAdjustment = (
+    key: keyof ImageAdjustment,
+    value: number
+  ) => {
+    setImageAdjustments((currentAdjustments) => {
+      const nextAdjustments = [...currentAdjustments];
+      nextAdjustments[activeImageIndex] = {
+        ...(nextAdjustments[activeImageIndex] ?? defaultImageAdjustment),
+        [key]: value,
+      };
+
+      return nextAdjustments;
+    });
+  };
+
+  const resetActiveImageAdjustment = () => {
+    setImageAdjustments((currentAdjustments) => {
+      const nextAdjustments = [...currentAdjustments];
+      nextAdjustments[activeImageIndex] = { ...defaultImageAdjustment };
+
+      return nextAdjustments;
+    });
   };
 
   const renderRemoveButton = (index: number) => (
@@ -99,57 +155,196 @@ function CustomizeSection() {
     </button>
   );
 
-  const renderPhoto = (image: string | undefined, className = "") =>
-    image ? (
+  const renderPhoto = (
+    image: string | undefined,
+    className = "",
+    index = 0
+  ) => {
+    const adjustment = imageAdjustments[index] ?? defaultImageAdjustment;
+
+    return image ? (
       <img
         src={image}
         alt="Uploaded magnet preview"
-        className={`h-full w-full object-cover ${className}`}
+        style={{
+          transform: `translate(${adjustment.x}%, ${adjustment.y}%) scale(${adjustment.scale})`,
+        }}
+        className={`h-full w-full object-cover transition-transform duration-200 ${className}`}
       />
     ) : (
       <div className={`h-full w-full ${className}`} />
     );
+  };
+
+  const renderAdjustmentControls = () => {
+    if (previewImages.length === 0) {
+      return null;
+    }
+
+    const activeAdjustment =
+      imageAdjustments[activeImageIndex] ?? defaultImageAdjustment;
+
+    return (
+      <div className="w-full max-w-md rounded-2xl border border-[#f1b8b9] bg-[#fffaf7] p-4 shadow-lg">
+        {previewImages.length > 1 && (
+          <div className="mb-4 flex justify-center gap-2">
+            {previewImages.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setActiveImageIndex(index)}
+                className={`h-9 rounded-full px-4 text-sm font-bold transition ${
+                  activeImageIndex === index
+                    ? "bg-[#ca3a3c] text-white"
+                    : "bg-[#ffe1dc] text-[#790405]"
+                }`}
+              >
+                Photo {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="grid gap-3 text-[#790405]">
+          <label className="grid gap-1 text-sm font-bold">
+            Zoom
+            <input
+              type="range"
+              min="1"
+              max="2"
+              step="0.05"
+              value={activeAdjustment.scale}
+              onChange={(event) =>
+                updateImageAdjustment("scale", Number(event.target.value))
+              }
+            />
+          </label>
+          <label className="grid gap-1 text-sm font-bold">
+            Left / Right
+            <input
+              type="range"
+              min="-35"
+              max="35"
+              step="1"
+              value={activeAdjustment.x}
+              onChange={(event) =>
+                updateImageAdjustment("x", Number(event.target.value))
+              }
+            />
+          </label>
+          <label className="grid gap-1 text-sm font-bold">
+            Up / Down
+            <input
+              type="range"
+              min="-35"
+              max="35"
+              step="1"
+              value={activeAdjustment.y}
+              onChange={(event) =>
+                updateImageAdjustment("y", Number(event.target.value))
+              }
+            />
+          </label>
+        </div>
+
+        <button
+          type="button"
+          onClick={resetActiveImageAdjustment}
+          className="mt-4 w-full rounded-xl border border-[#ca3a3c] px-4 py-2 text-sm font-bold text-[#ca3a3c] transition hover:bg-[#ca3a3c] hover:text-white"
+        >
+          Reset Adjustment
+        </button>
+      </div>
+    );
+  };
 
   const renderPreview = () => {
-    if (magnetType === "Strip Acryclic Magent Frames") {
+    if (magnetType === "Strip Acrylic Magnet Frames") {
       return (
-        <div className="w-[440px] max-w-full rounded-[32px] bg-[#ca3a3c] p-5 shadow-[0px_18px_60px_rgba(121,4,5,0.28)]">
-          <div className="grid grid-cols-3 gap-3 rounded-[24px] bg-[#8f1518] p-3">
-            {photoSlotColors.map((slotColor, index) => (
+        <div className="relative flex h-[520px] w-[250px] max-w-full items-center justify-center sm:h-[560px] sm:w-[270px]">
+          <div className="absolute bottom-8 h-14 w-44 rounded-full bg-black/20 blur-2xl" />
+          <div className="relative h-full w-[223px] rounded-[24px] bg-[#d8d5cb]/55 p-4 shadow-[0_26px_55px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur sm:w-[240px] sm:p-5">
+            <div className="absolute inset-y-3 left-3 w-3 rounded-l-[24px] bg-white/45 shadow-[inset_-2px_0_4px_rgba(0,0,0,0.16)]" />
+            <div className="absolute inset-y-3 right-3 w-3 rounded-r-[24px] bg-black/10" />
+            {[0, 1, 2, 3].map((corner) => (
               <div
-                key={slotColor}
-                className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-white shadow-inner"
-              >
-                {renderPhoto(previewImages[index], slotColor)}
-                {previewImages[index] && renderRemoveButton(index)}
-              </div>
+                key={corner}
+                className={`absolute z-20 h-8 w-8 rounded-full bg-gradient-to-br from-white via-[#dedbd1] to-[#aaa59a] shadow-[0_3px_8px_rgba(0,0,0,0.28),inset_0_2px_2px_rgba(255,255,255,0.85)] ${
+                  corner === 0
+                    ? "left-3 top-3"
+                    : corner === 1
+                    ? "right-3 top-3"
+                    : corner === 2
+                    ? "bottom-3 left-3"
+                    : "bottom-3 right-3"
+                }`}
+              />
             ))}
+            <div className="relative h-full rounded-[16px] bg-white p-3 shadow-[0_10px_22px_rgba(0,0,0,0.18)] sm:p-4">
+              <div className="flex h-full flex-col gap-3">
+                {photoSlotColors.map((slotColor, index) => (
+                  <div
+                    key={slotColor}
+                    onClick={() => setActiveImageIndex(index)}
+                    className="relative min-h-0 flex-1 overflow-hidden bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]"
+                  >
+                    {renderPhoto(previewImages[index], slotColor, index)}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-black/10" />
+                    {previewImages[index] && renderRemoveButton(index)}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-gradient-to-br from-white/35 via-transparent to-black/12" />
           </div>
         </div>
       );
     }
 
-    if (magnetType === "Big Acryclic Magent Frames") {
+    if (magnetType === "Big Acrylic Magnet Frames") {
       return (
-        <div className="relative h-[360px] w-[310px] max-w-full rounded-[42px] border border-[#ffb6b6] bg-[#ca3a3c]/80 p-6 shadow-[0px_24px_80px_rgba(121,4,5,0.3)] backdrop-blur sm:h-[460px] sm:w-[390px] sm:p-8">
-          <div className="absolute inset-4 rounded-[34px] border border-[#ffd6d6]" />
-          <div className="relative flex h-full items-center justify-center">
-            <div className="h-56 w-40 rounded-[10px] bg-[#fff5f0] p-3 pb-10 shadow-xl sm:h-72 sm:w-52 sm:pb-12">
-              <div className="relative h-full overflow-hidden rounded-md bg-[#ffd4d4]">
+        <div className="relative flex h-[430px] w-[330px] max-w-full items-center justify-center sm:h-[500px] sm:w-[380px]">
+          <div className="absolute bottom-8 h-14 w-56 rounded-full bg-black/18 blur-2xl" />
+          <div className="relative h-[400px] w-[300px] rounded-[24px] bg-[#e8e8e3]/58 p-4 shadow-[0_28px_56px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur sm:h-[480px] sm:w-[360px] sm:p-5">
+            <div className="absolute inset-y-3 left-2 w-2 rounded-l-[18px] bg-white/55 shadow-[inset_-2px_0_4px_rgba(0,0,0,0.12)]" />
+            <div className="absolute inset-y-3 right-2 w-2 rounded-r-[18px] bg-black/8" />
+            {[0, 1, 2, 3].map((corner) => (
+              <div
+                key={corner}
+                className={`absolute z-20 h-7 w-7 rounded-full bg-gradient-to-br from-white via-[#efeee9] to-[#c8c3b8] shadow-[0_2px_7px_rgba(0,0,0,0.22),inset_0_2px_2px_rgba(255,255,255,0.9)] ${
+                  corner === 0
+                    ? "left-3 top-3"
+                    : corner === 1
+                    ? "right-3 top-3"
+                    : corner === 2
+                    ? "bottom-3 left-3"
+                    : "bottom-3 right-3"
+                }`}
+              />
+            ))}
+            <div className="relative h-full rounded-[14px] bg-white p-3 shadow-[0_12px_24px_rgba(0,0,0,0.16)]">
+              <div className="relative h-full overflow-hidden bg-white shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]">
                 {renderPhoto(previewImages[0], photoSlotColors[0])}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-black/10" />
                 {previewImages[0] && renderRemoveButton(0)}
               </div>
             </div>
+            <div className="pointer-events-none absolute inset-0 rounded-[22px] bg-gradient-to-br from-white/35 via-transparent to-black/10" />
           </div>
         </div>
       );
     }
 
     return (
-      <div className="h-[300px] w-[300px] max-w-full overflow-hidden rounded-[40px] bg-[#ca3a3c] p-4 shadow-[0px_20px_80px_rgba(121,4,5,0.3)] sm:h-[410px] sm:w-[410px] sm:p-5">
-        <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[30px] bg-[#ffe1dc]">
-          {renderPhoto(previewImages[0], photoSlotColors[0])}
-          {previewImages[0] && renderRemoveButton(0)}
+      <div className="relative flex h-[330px] w-[330px] max-w-full items-center justify-center sm:h-[430px] sm:w-[430px]">
+        <div className="absolute bottom-8 h-12 w-64 rounded-full bg-black/18 blur-2xl sm:w-80" />
+        <div className="relative h-[260px] w-[260px] rounded-[38px] bg-[#f1f1f1] shadow-[0_24px_46px_rgba(0,0,0,0.22),inset_0_10px_14px_rgba(255,255,255,0.72),inset_0_-14px_22px_rgba(0,0,0,0.14)] sm:h-[340px] sm:w-[340px] sm:rounded-[48px]">
+          <div className="relative h-full overflow-hidden rounded-[38px] bg-[#f1f1f1] sm:rounded-[48px]">
+            {renderPhoto(previewImages[0], "bg-[#f1f1f1]")}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/45 via-transparent to-black/16" />
+            <div className="pointer-events-none absolute left-4 top-4 h-20 w-28 rounded-full bg-white/35 blur-xl sm:h-28 sm:w-40" />
+            {previewImages[0] && renderRemoveButton(0)}
+          </div>
         </div>
       </div>
     );
@@ -217,8 +412,8 @@ function CustomizeSection() {
           <h3 className="text-3xl font-bold mb-8">Create Your Magnet</h3>
 
           <p className="mt-3 text-base text-[#ffe1dc]">
-            {magnetType === "Strip Acryclic Magent Frames"
-              ? "Upload exactly 3 pictures for a Strip Acryclic Magent Frame."
+            {magnetType === "Strip Acrylic Magnet Frames"
+              ? "Upload exactly 3 pictures for a Strip Acrylic Magnet Frame."
               : "Upload 1 picture for this magnet."}
           </p>
 
@@ -276,7 +471,7 @@ function CustomizeSection() {
             key={fileInputKey}
             type="file"
             accept="image/*"
-            multiple={magnetType === "Strip Acryclic Magent Frames"}
+            multiple={needsThreeImages}
             onChange={handleImageChange}
             className="mt-5 w-full rounded-2xl border border-[#ffb6b6] bg-[#f8efe6] p-5 text-[#1a1a1a]"
           />
@@ -315,6 +510,7 @@ function CustomizeSection() {
         >
           <div className="flex w-full flex-col items-center gap-6">
             {renderPreview()}
+            {renderAdjustmentControls()}
             <p className="text-center text-3xl font-bold text-[#ca3a3c]">
               {magnetType}
             </p>

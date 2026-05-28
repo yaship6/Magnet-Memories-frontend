@@ -47,7 +47,11 @@ await loadEnvFile();
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    origin: [
+      "http://127.0.0.1:5173",
+      "http://localhost:5173",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
   })
 );
 app.use(express.json({ limit: "10mb" }));
@@ -159,6 +163,16 @@ async function createSupabaseOrder(order) {
   });
 
   return orders[0];
+}
+
+async function createSupabaseFeedback(feedback) {
+  const feedbackRows = await requestSupabaseTable("feedback", {
+    method: "POST",
+    prefer: "return=representation",
+    body: feedback,
+  });
+
+  return feedbackRows[0];
 }
 
 async function listSupabaseOrdersByGmail(gmail) {
@@ -450,6 +464,51 @@ app.post("/api/orders", async (request, response) => {
     return response.status(500).json({
       message:
         error instanceof Error ? error.message : "Could not place order.",
+    });
+  }
+});
+
+app.post("/api/feedback", async (request, response) => {
+  const customer = request.body.customer ?? {};
+  const customerName = String(request.body.name ?? customer.name ?? "").trim();
+  const customerEmail = String(customer.email ?? "").trim().toLowerCase();
+  const customerGmail = String(customer.gmail ?? customerEmail)
+    .trim()
+    .toLowerCase();
+  const customerUserId = customer.id ? String(customer.id).trim() : null;
+  const orderId = String(request.body.orderId ?? "").trim();
+  const rating = Number(request.body.rating);
+  const feedbackText = String(request.body.feedback ?? "").trim();
+
+  if (!customerName || !orderId || !feedbackText) {
+    return response.status(400).json({
+      message: "Name, order ID, and feedback are required.",
+    });
+  }
+
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return response.status(400).json({
+      message: "Rating must be between 1 and 5.",
+    });
+  }
+
+  try {
+    const feedback = await createSupabaseFeedback({
+      customer_user_id: customerUserId,
+      customer_name: customerName,
+      customer_email: customerGmail || null,
+      customer_gmail: customerGmail || null,
+      order_id: orderId,
+      rating,
+      feedback: feedbackText,
+    });
+
+    return response.status(201).json({ feedback });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({
+      message:
+        error instanceof Error ? error.message : "Could not submit feedback.",
     });
   }
 });

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const chatApi = axios.create({
-  baseURL: "http://127.0.0.1:5000/api",
+  baseURL: import.meta.env.VITE_AI_API_URL ?? "http://127.0.0.1:5000/api",
 });
 
 type ChatResponse = {

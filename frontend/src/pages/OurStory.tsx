@@ -50,7 +50,7 @@ function OurStory() {
               className="mt-6 text-xl leading-relaxed text-gray-700"
             >
               What began as a love for personalized keepsakes became a small
-              brand built around custom magnets, Big Acryclic Magent Frames,
+              brand built around custom magnets, Big Acrylic Magnet Frames,
               and meaningful gifts. Every magnet is made to feel personal,
               warm, and easy to keep close.
             </motion.p>

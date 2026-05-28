@@ -25,7 +25,7 @@ function Hero() {
           transition={{ delay: 0.4 }}
           className="mt-8 text-lg leading-relaxed text-[#470000] sm:text-xl"
         >
-          Premium customized Square Photo Magnets, Big Acryclic Magent Frames,
+          Premium customized Square Photo Magnets, Big Acrylic Magnet Frames,
           and memory keepsakes delivered to your doorstep.
         </motion.p>
 

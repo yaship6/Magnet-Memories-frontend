@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { createFeedback } from "../api/feedback";
+import { useStore } from "../context/StoreContext";
 import feedbackCharacter from "../assets/customer-feedback-character.png";
 import customerReviewImage from "../../WhatsApp Image 2026-05-27 at 16.04.35.jpeg";
 import customerReviewImage2 from "../../WhatsApp Image 2026-05-27 at 16.08.20.jpeg";
@@ -26,7 +28,15 @@ const reviews = [
 ];
 
 function OrderFeedback() {
+  const { user } = useStore();
   const [activeReview, setActiveReview] = useState(0);
+  const [name, setName] = useState(user?.name ?? "");
+  const [orderId, setOrderId] = useState("");
+  const [rating, setRating] = useState(5);
+  const [feedback, setFeedback] = useState("");
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const review = reviews[activeReview];
 
   const showPreviousReview = () => {
@@ -39,6 +49,41 @@ function OrderFeedback() {
     setActiveReview((current) =>
       current === reviews.length - 1 ? 0 : current + 1
     );
+  };
+
+  const handleSubmitFeedback = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitMessage("");
+    setSubmitError("");
+    setIsSubmitting(true);
+
+    try {
+      await createFeedback({
+        customer: user,
+        name,
+        orderId,
+        rating,
+        feedback,
+      });
+
+      setSubmitMessage("Thank you! Your feedback has been submitted.");
+      setOrderId("");
+      setRating(5);
+      setFeedback("");
+
+      if (!user) {
+        setName("");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Could not submit feedback. Please try again.";
+
+      setSubmitError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -124,13 +169,19 @@ function OrderFeedback() {
             </div>
           </section>
 
-          <form className="mt-8 grid gap-6 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-5 shadow-xl sm:p-10">
+          <form
+            onSubmit={handleSubmitFeedback}
+            className="mt-8 grid gap-6 rounded-[32px] border border-[#ce272a]/25 bg-[#ffbcbc] p-5 shadow-xl sm:p-10"
+          >
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <label className="flex flex-col gap-2 text-lg font-semibold">
                 Name
                 <input
                   type="text"
                   placeholder="Your name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  required
                   className="rounded-2xl border border-[#2f9f9a]/40 bg-white px-5 py-4 text-base font-normal outline-none focus:border-[#ce272a]"
                 />
               </label>
@@ -140,6 +191,9 @@ function OrderFeedback() {
                 <input
                   type="text"
                   placeholder="Order number"
+                  value={orderId}
+                  onChange={(event) => setOrderId(event.target.value)}
+                  required
                   className="rounded-2xl border border-[#2f9f9a]/40 bg-white px-5 py-4 text-base font-normal outline-none focus:border-[#ce272a]"
                 />
               </label>
@@ -147,12 +201,16 @@ function OrderFeedback() {
 
             <label className="flex flex-col gap-2 text-lg font-semibold">
               Rating
-              <select className="rounded-2xl border border-[#2f9f9a]/40 bg-white px-5 py-4 text-base font-normal outline-none focus:border-[#ce272a]">
-                <option>5 - Loved it</option>
-                <option>4 - Good</option>
-                <option>3 - Okay</option>
-                <option>2 - Needs improvement</option>
-                <option>1 - Not satisfied</option>
+              <select
+                value={rating}
+                onChange={(event) => setRating(Number(event.target.value))}
+                className="rounded-2xl border border-[#2f9f9a]/40 bg-white px-5 py-4 text-base font-normal outline-none focus:border-[#ce272a]"
+              >
+                <option value={5}>5 - Loved it</option>
+                <option value={4}>4 - Good</option>
+                <option value={3}>3 - Okay</option>
+                <option value={2}>2 - Needs improvement</option>
+                <option value={1}>1 - Not satisfied</option>
               </select>
             </label>
 
@@ -161,15 +219,31 @@ function OrderFeedback() {
               <textarea
                 placeholder="Share your experience"
                 rows={6}
+                value={feedback}
+                onChange={(event) => setFeedback(event.target.value)}
+                required
                 className="resize-none rounded-2xl border border-[#2f9f9a]/40 bg-white px-5 py-4 text-base font-normal outline-none focus:border-[#ce272a]"
               />
             </label>
 
+            {submitError && (
+              <p className="rounded-2xl bg-white px-5 py-3 text-base font-semibold text-[#ce272a]">
+                {submitError}
+              </p>
+            )}
+
+            {submitMessage && (
+              <p className="rounded-2xl bg-white px-5 py-3 text-base font-semibold text-[#2f9f9a]">
+                {submitMessage}
+              </p>
+            )}
+
             <button
               type="submit"
-              className="justify-self-start rounded-full bg-[#ce272a] px-8 py-4 text-lg font-semibold text-white transition hover:scale-105"
+              disabled={isSubmitting}
+              className="justify-self-start rounded-full bg-[#ce272a] px-8 py-4 text-lg font-semibold text-white transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
             >
-              Submit Feedback
+              {isSubmitting ? "Submitting..." : "Submit Feedback"}
             </button>
           </form>
         </section>

@@ -11,37 +11,34 @@ The Memory Magnets is an AI-powered custom magnet ordering platform where users 
 
 This project combines luxury UI/UX, full-stack development, and AI features into a modern startup-style platform 🚀
 
-# 🛠️ Tech Stack
+🛠️ Tech Stack
+ Frontend
+⚛️ React 19
+📘 TypeScript
+⚡ Vite
+🎨 Tailwind CSS
+🧭 React Router DOM
+✨ Framer Motion
+🎯 Lucide React Icons
+🎭 React Icons
+🌐 Axios
 
-## 🎨 Frontend
-- ⚛️ React
-- 📘 TypeScript
-- 🎨 Tailwind CSS
-- ✨ Framer Motion
-- 🧭 React Router DOM
+Backend
+🟢 Node.js
+🚂 Express.js
+🔗 CORS
+📦 ES Modules
 
----
+ Chatbot
+🟢 Node.js
+🚂 Express.js
+🔗 CORS
+🛠️ Tooling
+🧹 ESLint
+🎨 PostCSS
+⚡ Autoprefixer
+📦 npm
 
-## ⚙️ Backend
-- 🟢 Node.js
-- 🚂 Express.js
-
----
-
-## 🗄️ Databases
-- 🍃 MongoDB
-- 🐘 PostgreSQL
-
----
-
-## 🤖 AI Service
-- 🐍 Python
-- ⚡ FastAPI
-- 🧠 TensorFlow / CNN
-- 👁️ OpenCV
-- 📈 Pandas
-
----
 
 # 🌟 Features
 
@@ -66,7 +63,7 @@ This project combines luxury UI/UX, full-stack development, and AI features into
 memory-magnets/
 ├── frontend/
 ├── backend/
-├── ai-service/
+├── chatbot/
 ├── database/
 └── README.md
 

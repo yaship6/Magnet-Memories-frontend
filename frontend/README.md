@@ -66,7 +66,7 @@ This project combines luxury UI/UX, full-stack development, and AI features into
 memory-magnets/
 ├── frontend/
 ├── backend/
-├── ai-service/
+├── chatbot/
 ├── database/
 └── README.md
 

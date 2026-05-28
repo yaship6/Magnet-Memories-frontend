@@ -56,7 +56,7 @@ function Chatbot() {
         {
           id: Date.now() + 1,
           sender: "bot",
-          text: "I cannot reach the enquiry service right now. Please make sure ai-service is running on port 5000.",
+          text: "I cannot reach the chatbot service right now. Please make sure chatbot is running on port 5000.",
         },
       ]);
     } finally {

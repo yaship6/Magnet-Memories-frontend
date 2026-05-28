@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { FaInstagram, FaLinkedin } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logoImage from "../../Untitled (Your Story).png";
 
 function Footer() {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
   return (
     <footer className="relative bg-[#2f9f9a] px-5 py-6 text-[#f8f3e8] sm:px-8 lg:px-10 lg:py-6 lg:pl-32">
       <svg
@@ -72,11 +75,11 @@ function Footer() {
               <Link to="/shop?category=Square+Photo+Magnets">
                 Square Photo Magnets
               </Link>
-              <Link to="/shop?category=Strip+Acryclic+Magnet+Frames">
-                Strip Acryclic Magnet Frames
+              <Link to="/shop?category=Strip+Acrylic+Magnet+Frames">
+                Strip Acrylic Magnet Frames
               </Link>
-              <Link to="/shop?category=Big+Acryclic+Magnet+Frames">
-                Big Acryclic Magnet Frames
+              <Link to="/shop?category=Big+Acrylic+Magnet+Frames">
+                Big Acrylic Magnet Frames
               </Link>
               <Link to="/customize">Custom Magnets</Link>
             </div>
@@ -92,8 +95,12 @@ function Footer() {
                   placeholder="Your email here"
                   className="min-w-0 flex-1 border border-[#8aa89a] bg-transparent px-4 py-3 text-base outline-none"
                 />
-                <button className="border border-[#8aa89a] px-7 py-3 text-base font-semibold transition hover:bg-[#f8f3e8] hover:text-[#2f9f9a]">
-                  Subscribe
+                <button
+                  type="button"
+                  onClick={() => setIsSubscribed(true)}
+                  className="border border-[#8aa89a] px-7 py-3 text-base font-semibold transition hover:bg-[#f8f3e8] hover:text-[#2f9f9a]"
+                >
+                  {isSubscribed ? "Subscribed" : "Subscribe"}
                 </button>
               </div>
 
