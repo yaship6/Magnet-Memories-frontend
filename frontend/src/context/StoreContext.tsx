@@ -2,7 +2,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -23,24 +22,33 @@ export type CartItem = {
   quantity: number;
 };
 
+export type WishlistItem = Omit<CartItem, "quantity">;
+
 type StoreContextValue = {
   user: User | null;
   cartItems: CartItem[];
   cartCount: number;
+  wishlistItems: WishlistItem[];
+  wishlistCount: number;
   setAuthenticatedUser: (user: User) => void;
   logout: () => void;
   addToCart: (item: Omit<CartItem, "quantity">) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+  addToWishlist: (item: WishlistItem) => void;
+  removeFromWishlist: (id: string) => void;
+  isInWishlist: (id: string) => boolean;
 };
 
 const StoreContext = createContext<StoreContextValue | undefined>(undefined);
 const currentUserKey = "memory-magnets-current-user-supabase";
 const legacyCurrentUserKey = "memory-magnets-current-user";
 const cartKeyPrefix = "memory-magnets-cart";
+const wishlistKeyPrefix = "memory-magnets-wishlist";
 
 const getCartKey = (email: string) => `${cartKeyPrefix}-${email}`;
+const getWishlistKey = (email: string) => `${wishlistKeyPrefix}-${email}`;
 
 function readStoredUser() {
   window.localStorage.removeItem(legacyCurrentUserKey);
@@ -76,10 +84,31 @@ function readStoredCart(user: User | null) {
   }
 }
 
+function readStoredWishlist(user: User | null) {
+  if (!user) {
+    return [];
+  }
+
+  const storedWishlist = window.localStorage.getItem(getWishlistKey(user.email));
+
+  if (!storedWishlist) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(storedWishlist) as WishlistItem[];
+  } catch {
+    return [];
+  }
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => readStoredUser());
   const [cartItems, setCartItems] = useState<CartItem[]>(() =>
     readStoredCart(readStoredUser())
+  );
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>(() =>
+    readStoredWishlist(readStoredUser())
   );
 
   useEffect(() => {
@@ -89,6 +118,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     window.localStorage.setItem(getCartKey(user.email), JSON.stringify(cartItems));
   }, [cartItems, user]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      getWishlistKey(user.email),
+      JSON.stringify(wishlistItems)
+    );
+  }, [wishlistItems, user]);
 
   const setAuthenticatedUser = (nextUser: User) => {
     const email = String(nextUser.email ?? nextUser.gmail ?? "")
@@ -105,12 +145,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(currentUserKey, JSON.stringify(normalizedUser));
     setUser(normalizedUser);
     setCartItems(readStoredCart(normalizedUser));
+    setWishlistItems(readStoredWishlist(normalizedUser));
   };
 
   const logout = () => {
     window.localStorage.removeItem(currentUserKey);
     setUser(null);
     setCartItems([]);
+    setWishlistItems([]);
   };
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {
@@ -154,26 +196,52 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setCartItems([]);
   };
 
-  const value = useMemo(
-    () => ({
-      user,
-      cartItems,
-      cartCount: cartItems.reduce((count, item) => count + item.quantity, 0),
-      setAuthenticatedUser,
-      logout,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-    }),
-    [cartItems, user]
-  );
+  const addToWishlist = (item: WishlistItem) => {
+    setWishlistItems((currentItems) => {
+      const existingItem = currentItems.find(
+        (wishlistItem) => wishlistItem.id === item.id
+      );
+
+      if (existingItem) {
+        return currentItems;
+      }
+
+      return [...currentItems, item];
+    });
+  };
+
+  const removeFromWishlist = (id: string) => {
+    setWishlistItems((currentItems) =>
+      currentItems.filter((wishlistItem) => wishlistItem.id !== id)
+    );
+  };
+
+  const isInWishlist = (id: string) =>
+    wishlistItems.some((wishlistItem) => wishlistItem.id === id);
+
+  const value = {
+    user,
+    cartItems,
+    cartCount: cartItems.reduce((count, item) => count + item.quantity, 0),
+    wishlistItems,
+    wishlistCount: wishlistItems.length,
+    setAuthenticatedUser,
+    logout,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    addToWishlist,
+    removeFromWishlist,
+    isInWishlist,
+  };
 
   return (
     <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useStore() {
   const context = useContext(StoreContext);
 

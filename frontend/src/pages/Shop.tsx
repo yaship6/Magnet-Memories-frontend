@@ -1,4 +1,4 @@
-import { ShoppingCart } from "lucide-react";
+import { Bookmark, ShoppingCart } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -305,9 +305,18 @@ const categories = [
   },
 ];
 
+const getProductId = (product: Product) =>
+  `${product.category}-${product.name}`.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
 function Shop() {
   const navigate = useNavigate();
-  const { addToCart, user } = useStore();
+  const {
+    addToCart,
+    addToWishlist,
+    isInWishlist,
+    removeFromWishlist,
+    user,
+  } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedCategory = searchParams.get("category") ?? "All";
   const activeCategory = categories.some(
@@ -330,19 +339,37 @@ function Shop() {
     setSearchParams({ category });
   };
 
-  const handleAddToCart = (product: (typeof shopPins)[number], index: number) => {
+  const getStoreItem = (product: Product) => ({
+    id: getProductId(product),
+    name: product.name,
+    price: product.price,
+    category: product.category,
+    image: Array.isArray(product.image) ? product.image[0] : product.image,
+  });
+
+  const handleAddToCart = (product: (typeof shopPins)[number]) => {
     if (!user) {
       navigate("/login");
       return;
     }
 
-    addToCart({
-      id: `${product.category}-${product.name}-${index}`,
-      name: product.name,
-      price: product.price,
-      category: product.category,
-      image: Array.isArray(product.image) ? product.image[0] : product.image,
-    });
+    addToCart(getStoreItem(product));
+  };
+
+  const handleToggleWishlist = (product: Product) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    const wishlistItem = getStoreItem(product);
+
+    if (isInWishlist(wishlistItem.id)) {
+      removeFromWishlist(wishlistItem.id);
+      return;
+    }
+
+    addToWishlist(wishlistItem);
   };
 
   const renderProductPreview = (product: Product) => {
@@ -480,7 +507,11 @@ function Shop() {
                 : "columns-1 gap-4 md:columns-3 lg:columns-7"
             }
           >
-            {visiblePins.map((product, index) => (
+            {visiblePins.map((product, index) => {
+              const productId = getProductId(product);
+              const saved = isInWishlist(productId);
+
+              return (
               <article
                 key={`${product.name}-${index}`}
                 className={`group ${
@@ -492,12 +523,26 @@ function Shop() {
                 <div className="relative overflow-hidden rounded-2xl bg-white">
                   {renderProductPreview(product)}
                   <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/20" />
-                  <button className="absolute right-3 top-3 rounded-full bg-[#e60023] px-5 py-3 text-sm font-bold text-white opacity-0 shadow-lg transition group-hover:opacity-100">
-                    Save
+                  <button
+                    type="button"
+                    onClick={() => handleToggleWishlist(product)}
+                    className={`absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition group-hover:opacity-100 ${
+                      saved
+                        ? "bg-[#e60023] text-white opacity-100"
+                        : "bg-white text-[#790405] opacity-0"
+                    }`}
+                    aria-label={
+                      saved
+                        ? `Remove ${product.name} from wishlist`
+                        : `Save ${product.name} to wishlist`
+                    }
+                    title={saved ? "Saved" : "Save"}
+                  >
+                    <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleAddToCart(product, index)}
+                    onClick={() => handleAddToCart(product)}
                     className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black opacity-0 shadow-lg transition group-hover:opacity-100"
                     aria-label={`Add ${product.name} to cart`}
                   >
@@ -518,7 +563,7 @@ function Shop() {
                     </p>
                     <button
                       type="button"
-                      onClick={() => handleAddToCart(product, index)}
+                      onClick={() => handleAddToCart(product)}
                       className="rounded-full bg-[#ce272a] px-3 py-1.5 text-xs font-semibold text-white"
                     >
                       Add
@@ -526,7 +571,8 @@ function Shop() {
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </section>
       </main>

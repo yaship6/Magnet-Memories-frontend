@@ -1,12 +1,22 @@
-import { LogOut, ShoppingCart } from "lucide-react";
+import {
+  Bookmark,
+  ChevronDown,
+  ClipboardList,
+  LogOut,
+  ShoppingCart,
+  UserRound,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import logoImage from "../../Untitled (Your Story).png";
 
 function Navbar() {
-  const { cartCount, logout, user } = useStore();
+  const { cartCount, logout, user, wishlistCount } = useStore();
+  const userDisplayName = user?.name ?? user?.gmail ?? user?.email ?? "Account";
   const navLinkClass =
     "flex min-h-10 items-center justify-center rounded-full border-2 border-[#790405] bg-[#ca3a3c] px-4 py-2 text-center text-base font-semibold leading-none text-white transition-all duration-300 hover:border-[#ff9999] hover:bg-[#5a0205]";
+  const accountMenuItemClass =
+    "flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-base font-semibold text-[#790405] transition hover:bg-[#ffbcbc]";
 
   return (
     <nav className="relative z-20 grid min-h-20 min-w-[1440px] grid-cols-[280px_1fr_280px] items-center gap-8 bg-[#2f9f9a] px-8 py-3">
@@ -35,33 +45,69 @@ function Navbar() {
       </div>
 
       <div className="z-20 col-start-3 flex items-center justify-end gap-3 whitespace-nowrap text-white">
-        <Link to="/cart" className={`${navLinkClass} flex items-center gap-2`}>
-          <ShoppingCart size={22} />
-          Cart
-          {cartCount > 0 && (
-            <span className="rounded-full bg-[#2f9f9a] px-2 py-0.5 text-sm">
-              {cartCount}
-            </span>
-          )}
-        </Link>
         <Link to="/contact" className={navLinkClass}>
           Contact
         </Link>
         {user ? (
-          <>
-            <Link to="/orders" className={navLinkClass}>
-              Orders
-            </Link>
+          <div className="group relative">
             <button
               type="button"
-              onClick={logout}
-              className={`${navLinkClass} w-12 px-0`}
-              aria-label={`Logout ${user.name ?? user.gmail ?? user.email}`}
-              title={`Logout ${user.name ?? user.gmail ?? user.email}`}
+              className={`${navLinkClass} max-w-[220px] gap-2`}
+              aria-haspopup="menu"
+              aria-label={`${userDisplayName} account menu`}
             >
-              <LogOut size={22} />
+              <UserRound size={21} />
+              <span className="max-w-[120px] truncate">{userDisplayName}</span>
+              <ChevronDown
+                className="transition group-hover:rotate-180 group-focus-within:rotate-180"
+                size={18}
+              />
             </button>
-          </>
+            <div
+              className="invisible absolute right-0 top-[calc(100%+10px)] z-50 w-64 rounded-[24px] border-2 border-[#790405] bg-[#fffaf7] p-3 text-[#790405] opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+              role="menu"
+            >
+              <Link
+                to="/wishlist"
+                className={accountMenuItemClass}
+                role="menuitem"
+              >
+                <Bookmark size={20} />
+                <span className="flex-1">Wishlist</span>
+                {wishlistCount > 0 && (
+                  <span className="rounded-full bg-[#2f9f9a] px-2 py-0.5 text-sm text-white">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+              <Link to="/cart" className={accountMenuItemClass} role="menuitem">
+                <ShoppingCart size={20} />
+                <span className="flex-1">Cart</span>
+                {cartCount > 0 && (
+                  <span className="rounded-full bg-[#2f9f9a] px-2 py-0.5 text-sm text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              <Link
+                to="/orders"
+                className={accountMenuItemClass}
+                role="menuitem"
+              >
+                <ClipboardList size={20} />
+                Orders
+              </Link>
+              <button
+                type="button"
+                onClick={logout}
+                className={accountMenuItemClass}
+                role="menuitem"
+              >
+                <LogOut size={20} />
+                Logout
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             <Link to="/login" className={navLinkClass}>
