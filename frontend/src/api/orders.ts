@@ -40,8 +40,18 @@ export async function createOrder(payload: {
   notes: string;
   items: CartItem[];
 }) {
-  const response = await api.post<OrderResponse>("/orders", payload);
-  return response.data;
+  try {
+    const response = await api.post<OrderResponse>("/orders", payload);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError<{ message?: string }>(error)) {
+      throw new Error(
+        error.response?.data?.message ?? "Could not place order."
+      );
+    }
+
+    throw error;
+  }
 }
 
 export async function getOrders(gmail: string) {

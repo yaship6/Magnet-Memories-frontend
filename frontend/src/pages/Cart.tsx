@@ -12,7 +12,7 @@ const getPriceNumber = (price: string) => Number(price.replace(/[^0-9]/g, ""));
 function Cart() {
   const { user, cartItems, clearCart, removeFromCart, updateQuantity } =
     useStore();
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(user?.phone ?? "");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -62,8 +62,12 @@ function Cart() {
         `Order placed successfully. Order ID: ${order.id.slice(0, 8)}`
       );
       window.scrollTo(0, 0);
-    } catch {
-      setOrderError("Could not place order. Please check details and try again.");
+    } catch (error) {
+      setOrderError(
+        error instanceof Error
+          ? error.message
+          : "Could not place order. Please check details and try again."
+      );
     } finally {
       setIsPlacingOrder(false);
     }

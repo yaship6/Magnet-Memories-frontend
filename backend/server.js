@@ -377,18 +377,26 @@ async function sendGmailMessage({ to, subject, text }) {
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 8000,
     auth: {
       user: gmailUser,
       pass: gmailAppPassword,
     },
   });
 
-  await transporter.sendMail({
-    from: `"The Memory Magnets" <${gmailUser}>`,
-    to,
-    subject,
-    text,
-  });
+  await Promise.race([
+    transporter.sendMail({
+      from: `"The Memory Magnets" <${gmailUser}>`,
+      to,
+      subject,
+      text,
+    }),
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Gmail send timed out.")), 9000);
+    }),
+  ]);
 
   return { skipped: false };
 }
@@ -590,26 +598,25 @@ app.post("/api/orders", async (request, response) => {
       total_amount: totalAmount,
     });
 
-    let emailSent = false;
-    let emailMessage = "Confirmation email is not configured.";
+    const emailConfigured = Boolean(
+      (process.env.EMAIL_USER ?? process.env.GMAIL_USER)?.trim() &&
+        (process.env.EMAIL_PASS ?? process.env.GMAIL_APP_PASSWORD)?.trim()
+    );
+    const emailMessage = emailConfigured
+      ? "Order saved. Confirmation email is being sent."
+      : "Confirmation email is not configured.";
 
-    try {
-      const emailResult = await sendGmailMessage({
+    if (emailConfigured) {
+      sendGmailMessage({
         to: customerGmail,
         subject: `Memory Magnets order confirmation ${order.id.slice(0, 8)}`,
         text: formatOrderEmail(order),
+      }).catch((emailError) => {
+        console.error("Confirmation email could not be sent:", emailError);
       });
-
-      emailSent = !emailResult.skipped;
-      emailMessage = emailSent
-        ? "Confirmation email sent."
-        : "Confirmation email is not configured.";
-    } catch (emailError) {
-      console.error(emailError);
-      emailMessage = "Confirmation email could not be sent.";
     }
 
-    return response.status(201).json({ order, emailSent, emailMessage });
+    return response.status(201).json({ order, emailSent: false, emailMessage });
   } catch (error) {
     console.error(error);
     return response.status(500).json({
