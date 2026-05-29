@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import tls from "node:tls";
 import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
+import nodemailer from "nodemailer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envFile = path.join(__dirname, ".env");
@@ -317,8 +317,20 @@ async function updateSupabaseCustomerProfile(id, profile) {
   return updatedCustomer;
 }
 
-function encodeBase64(value) {
-  return Buffer.from(String(value), "utf-8").toString("base64");
+function getSupabaseErrorMessage(error) {
+  const message = error instanceof Error ? error.message : String(error);
+
+  try {
+    const parsed = JSON.parse(message);
+
+    if (parsed?.message) {
+      return String(parsed.message);
+    }
+  } catch {
+    // Supabase sometimes returns plain text errors.
+  }
+
+  return message;
 }
 
 function formatOrderEmail(order) {
@@ -354,73 +366,29 @@ function formatOrderEmail(order) {
 }
 
 async function sendGmailMessage({ to, subject, text }) {
-  const gmailUser = process.env.GMAIL_USER?.trim();
-  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s+/g, "");
+  const gmailUser = (process.env.EMAIL_USER ?? process.env.GMAIL_USER)?.trim();
+  const gmailAppPassword = (
+    process.env.EMAIL_PASS ?? process.env.GMAIL_APP_PASSWORD
+  )?.replace(/\s+/g, "");
 
   if (!gmailUser || !gmailAppPassword) {
     return { skipped: true };
   }
 
-  const socket = tls.connect(465, "smtp.gmail.com", {
-    servername: "smtp.gmail.com",
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: gmailUser,
+      pass: gmailAppPassword,
+    },
   });
 
-  const readResponse = () =>
-    new Promise((resolve, reject) => {
-      let responseText = "";
-
-      const handleData = (chunk) => {
-        responseText += chunk.toString("utf-8");
-        const lines = responseText.trimEnd().split(/\r?\n/);
-        const lastLine = lines[lines.length - 1] ?? "";
-
-        if (/^\d{3} /.test(lastLine)) {
-          socket.off("data", handleData);
-          resolve(responseText);
-        }
-      };
-
-      socket.on("data", handleData);
-      socket.once("error", reject);
-    });
-
-  const sendCommand = async (command, expectedCode) => {
-    socket.write(`${command}\r\n`);
-    const response = String(await readResponse());
-
-    if (!response.startsWith(expectedCode)) {
-      throw new Error(`Gmail SMTP failed: ${response.trim()}`);
-    }
-  };
-
-  await new Promise((resolve, reject) => {
-    socket.once("secureConnect", resolve);
-    socket.once("error", reject);
-  });
-
-  await readResponse();
-  await sendCommand("EHLO memory-magnets.local", "250");
-  await sendCommand("AUTH LOGIN", "334");
-  await sendCommand(encodeBase64(gmailUser), "334");
-  await sendCommand(encodeBase64(gmailAppPassword), "235");
-  await sendCommand(`MAIL FROM:<${gmailUser}>`, "250");
-  await sendCommand(`RCPT TO:<${to}>`, "250");
-  await sendCommand("DATA", "354");
-
-  const message = [
-    `From: The Memory Magnets <${gmailUser}>`,
-    `To: ${to}`,
-    `Subject: ${subject}`,
-    "MIME-Version: 1.0",
-    'Content-Type: text/plain; charset="UTF-8"',
-    "",
+  await transporter.sendMail({
+    from: `"The Memory Magnets" <${gmailUser}>`,
+    to,
+    subject,
     text,
-    ".",
-  ].join("\r\n");
-
-  await sendCommand(message, "250");
-  await sendCommand("QUIT", "221");
-  socket.end();
+  });
 
   return { skipped: false };
 }
@@ -572,9 +540,14 @@ app.put("/api/auth/profile", async (request, response) => {
     return response.json({ user: toPublicUser(updatedUser) });
   } catch (error) {
     console.error(error);
+    const errorMessage = getSupabaseErrorMessage(error);
+
     return response.status(500).json({
-      message:
-        error instanceof Error ? error.message : "Could not update profile.",
+      message: errorMessage.includes(
+        "Could not find the 'phone' column of 'customers'"
+      )
+        ? "Supabase customers.phone is missing or not refreshed. Run backend/supabase-customers-name-optional.sql in Supabase, then try again."
+        : errorMessage || "Could not update profile.",
     });
   }
 });

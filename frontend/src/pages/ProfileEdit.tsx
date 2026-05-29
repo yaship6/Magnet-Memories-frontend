@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from "react";
-import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -37,13 +36,11 @@ function ProfileEdit() {
       updateAuthenticatedUser(updatedUser);
       setMessage("Profile updated successfully.");
     } catch (saveError) {
-      if (axios.isAxiosError(saveError)) {
-        setError(
-          saveError.response?.data?.message ?? "Could not update profile."
-        );
-      } else {
-        setError("Could not update profile.");
-      }
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Could not update profile."
+      );
     } finally {
       setIsSaving(false);
     }

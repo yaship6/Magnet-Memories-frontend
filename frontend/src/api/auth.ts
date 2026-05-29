@@ -38,6 +38,16 @@ export async function updateProfile(payload: {
   phone: string;
   email: string;
 }) {
-  const response = await api.put<AuthResponse>("/auth/profile", payload);
-  return getUserFromResponse(response.data);
+  try {
+    const response = await api.put<AuthResponse>("/auth/profile", payload);
+    return getUserFromResponse(response.data);
+  } catch (error) {
+    if (axios.isAxiosError<{ message?: string }>(error)) {
+      throw new Error(
+        error.response?.data?.message ?? "Could not update profile."
+      );
+    }
+
+    throw error;
+  }
 }

@@ -10,3 +10,5 @@ alter table if exists public.customers
 alter table if exists public.customers disable row level security;
 alter table if exists public.orders disable row level security;
 alter table if exists public.feedback disable row level security;
+
+notify pgrst, 'reload schema';
